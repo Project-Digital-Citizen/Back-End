@@ -97,6 +97,11 @@ async function login(req, res) {
             expiresIn: '1h',
         });
 
+        // Set cookie with the token
+        res.cookie('token', token, {
+            httpOnly: true
+        });
+
         res.status(200).json({
             status: 'success',
             token,
