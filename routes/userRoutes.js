@@ -5,19 +5,159 @@ const {
     getUser,
     getUsers,
     updateUser,
-    deleteUser
+    deleteUser,
 } = require('../controllers/userController');
 
-// GET a single user by ID
+/**
+ * @swagger
+ * /users/{id}:
+ *   get:
+ *     summary: Get a single user by ID
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: ID of the user
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Successful operation
+ *         content:
+ *           application/json:
+ *             example:
+ *               user: { "id": "1", "name": "John Doe", "email": "john@example.com" }
+ *       404:
+ *         description: User not found
+ *         content:
+ *           application/json:
+ *             example:
+ *               status: error
+ *               message: User not found
+ *       500:
+ *         description: Internal Server Error
+ *         content:
+ *           application/json:
+ *             example:
+ *               status: error
+ *               error: Internal Server Error
+ */
 router.get('/:id', getUser);
 
-// GET all users
+/**
+ * @swagger
+ * /users:
+ *   get:
+ *     summary: Get all users
+ *     responses:
+ *       200:
+ *         description: Successful operation
+ *         content:
+ *           application/json:
+ *             example:
+ *               users: [{ "id": "1", "name": "John Doe", "email": "john@example.com" }]
+ *       500:
+ *         description: Internal Server Error
+ *         content:
+ *           application/json:
+ *             example:
+ *               status: error
+ *               error: Internal Server Error
+ */
 router.get('/', getUsers);
 
-// PUT update user by ID
+/**
+ * @swagger
+ * /users/{id}:
+ *   put:
+ *     summary: Update user by ID
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: ID of the user
+ *         schema:
+ *           type: string
+ *     requestBody:
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               name:
+ *                 type: string
+ *               email:
+ *                 type: string
+ *             required:
+ *               - name
+ *               - email
+ *     responses:
+ *       200:
+ *         description: Successful operation
+ *         content:
+ *           application/json:
+ *             example:
+ *               status: success
+ *               message: User updated successfully
+ *       400:
+ *         description: Invalid input
+ *         content:
+ *           application/json:
+ *             example:
+ *               status: error
+ *               message: Invalid input
+ *       404:
+ *         description: User not found
+ *         content:
+ *           application/json:
+ *             example:
+ *               status: error
+ *               message: User not found
+ *       500:
+ *         description: Internal Server Error
+ *         content:
+ *           application/json:
+ *             example:
+ *               status: error
+ *               error: Internal Server Error
+ */
 router.put('/:id', updateUser);
 
-// DELETE user by ID
+/**
+ * @swagger
+ * /users/{id}:
+ *   delete:
+ *     summary: Delete user by ID
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: ID of the user
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Successful operation
+ *         content:
+ *           application/json:
+ *             example:
+ *               status: success
+ *               message: User deleted successfully
+ *       404:
+ *         description: User not found
+ *         content:
+ *           application/json:
+ *             example:
+ *               status: error
+ *               message: User not found
+ *       500:
+ *         description: Internal Server Error
+ *         content:
+ *           application/json:
+ *             example:
+ *               status: error
+ *               error: Internal Server Error
+ */
 router.delete('/:id', deleteUser);
 
 module.exports = router;

@@ -5,6 +5,10 @@ const authRoutes = require('./routes/authRoutes');
 const userRoutes = require('./routes/userRoutes');
 const emailRoutes = require('./routes/emailRoutes');
 const {
+    swaggerUi,
+    specs
+} = require('./swagger');
+const {
     connectDatabase
 } = require('./db/database');
 
@@ -15,12 +19,16 @@ app.use(cookieParser());
 // Connect to MongoDB
 connectDatabase();
 
+
 // Home route
 app.get('/', (req, res) => {
     res.json({
         message: 'Halo, selamat datang di Digzen!'
     });
 });
+
+// Serve Swagger UI
+app.use('/docs', swaggerUi.serve, swaggerUi.setup(specs));
 
 // Use auth routes
 app.use('/auth', authRoutes);
