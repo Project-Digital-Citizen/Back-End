@@ -84,13 +84,22 @@ router.get('/', getUsers);
  *           schema:
  *             type: object
  *             properties:
- *               name:
- *                 type: string
  *               email:
  *                 type: string
+ *               nomor:
+ *                 type: string
+ *               nama:
+ *                 type: string
+ *               password:
+ *                 type: string
+ *               NIK:
+ *                 type: string
  *             required:
- *               - name
  *               - email
+ *               - nomor
+ *               - nama
+ *               - password
+ *               - NIK
  *     responses:
  *       200:
  *         description: Successful operation
