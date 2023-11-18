@@ -15,6 +15,13 @@ app.use(cookieParser());
 // Connect to MongoDB
 connectDatabase();
 
+// Home route
+app.get('/', (req, res) => {
+    res.json({
+        message: 'Halo, selamat datang di Digzen!'
+    });
+});
+
 // Use auth routes
 app.use('/auth', authRoutes);
 app.use('/users', userRoutes);
