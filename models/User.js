@@ -25,6 +25,10 @@ const userSchema = new mongoose.Schema({
         required: true,
         unique: true
     },
+    isActive: {
+        type: Boolean,
+        default: false, // Set default value to false
+    },
 });
 
 const User = mongoose.model('Users', userSchema);

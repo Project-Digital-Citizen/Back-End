@@ -3,6 +3,7 @@ const express = require('express');
 const cookieParser = require('cookie-parser');
 const authRoutes = require('./routes/authRoutes');
 const userRoutes = require('./routes/userRoutes');
+const emailRoutes = require('./routes/emailRoutes');
 const {
     connectDatabase
 } = require('./db/database');
@@ -17,6 +18,7 @@ connectDatabase();
 // Use auth routes
 app.use('/auth', authRoutes);
 app.use('/users', userRoutes);
+app.use('/email', emailRoutes);
 
 // Start the server
 const PORT = process.env.PORT || 3000;

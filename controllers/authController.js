@@ -1,10 +1,14 @@
 // controllers/authController.js
 const User = require('../models/User');
+const OTP = require('../models/OTP');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const {
     secretKey
 } = require('../middleware/authMiddleware');
+const {
+    sendOTP
+} = require('./emailController');
 
 async function register(req, res) {
     try {
@@ -49,9 +53,67 @@ async function register(req, res) {
         // Save the user to the database
         await user.save();
 
+        // Send OTP after successful registration
+        await sendOTP({
+            email
+        });
+
         res.status(201).json({
             status: 'success',
             message: 'User registered successfully',
+        });
+    } catch (error) {
+        res.status(500).json({
+            status: 'error',
+            error: error.message,
+        });
+    }
+}
+
+async function verifyOTP(req, res) {
+    try {
+        const {
+            email,
+            otp
+        } = req.body;
+
+        // Validate OTP
+        const savedOTP = await OTP.findOne({
+            email,
+            otp
+        });
+
+        if (!savedOTP) {
+            return res.status(400).json({
+                status: 'error',
+                message: 'Invalid OTP',
+            });
+        }
+
+        // Update user's isActive status to true
+        const user = await User.findOne({
+            email
+        });
+
+        if (!user) {
+            return res.status(404).json({
+                status: 'error',
+                message: 'User not found',
+            });
+        }
+
+        user.isActive = true;
+        await user.save();
+
+        // Remove OTP record from the database after successful verification
+        await OTP.findOneAndDelete({
+            email,
+            otp
+        });
+
+        res.status(200).json({
+            status: 'success',
+            message: 'User verified successfully',
         });
     } catch (error) {
         res.status(500).json({
@@ -114,7 +176,9 @@ async function login(req, res) {
     }
 }
 
+
 module.exports = {
     register,
     login,
+    verifyOTP,
 };
