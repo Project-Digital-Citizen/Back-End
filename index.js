@@ -4,6 +4,7 @@ const cookieParser = require('cookie-parser');
 const authRoutes = require('./routes/authRoutes');
 const userRoutes = require('./routes/userRoutes');
 const emailRoutes = require('./routes/emailRoutes');
+const ktpRoutes = require('./routes/ktpRoutes');
 const {
     swaggerUi,
     specs
@@ -34,6 +35,7 @@ app.use('/docs', swaggerUi.serve, swaggerUi.setup(specs));
 app.use('/auth', authRoutes);
 app.use('/users', userRoutes);
 app.use('/email', emailRoutes);
+app.use('/ktp', ktpRoutes);
 
 // Start the server
 const PORT = process.env.PORT || 3000;
