@@ -1,6 +1,7 @@
 require('dotenv').config()
 const express = require('express');
 const cookieParser = require('cookie-parser');
+const cors = require("cors");
 const authRoutes = require('./routes/authRoutes');
 const userRoutes = require('./routes/userRoutes');
 const emailRoutes = require('./routes/emailRoutes');
@@ -15,6 +16,7 @@ const {
 
 const app = express();
 
+app.use(cors());
 app.use(express.json());
 app.use(cookieParser());
 // Connect to MongoDB
