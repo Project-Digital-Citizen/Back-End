@@ -25,3 +25,4 @@ jobs:
         script: |
           cd /root/Back-End
           git pull
+          pm2 restart Back-End
