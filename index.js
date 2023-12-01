@@ -16,7 +16,7 @@ const {
 
 const app = express();
 
-app.options('*', cors());
+app.use(cors('*'));
 app.use(express.json());
 app.use(cookieParser());
 // Connect to MongoDB
