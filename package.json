@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon index.js"
+    "start": "nodemon index.js",
+    "start2": "pm2 start node index.js --name Back-End"
   },
   "dependencies": {
     "bcrypt": "^5.1.1",

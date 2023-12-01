@@ -24,6 +24,4 @@ jobs:
         key: ${{ secrets.SSH_PRIVATE_KEY }}
         script: |
           cd /root/Back-End
-          git pull origin main
-          npm install
-          pm2 restart index.js
+          git pull
