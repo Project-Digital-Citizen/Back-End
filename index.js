@@ -16,12 +16,7 @@ const {
 
 const app = express();
 
-const corsOptions = {
-    origin: 'http://localhost:5173/',
-    optionsSuccessStatus: 200,
-};
-
-app.use(cors(corsOptions));
+app.options('*', cors());
 app.use(express.json());
 app.use(cookieParser());
 // Connect to MongoDB
