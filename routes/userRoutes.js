@@ -108,6 +108,7 @@ router.get('/', getUsers);
  *             example:
  *               status: success
  *               message: User updated successfully
+ *               user: { "id": "1", "name": "Updated Name", "email": "updated@example.com" }
  *       400:
  *         description: Invalid input
  *         content:
@@ -152,6 +153,7 @@ router.put('/:id', updateUser);
  *             example:
  *               status: success
  *               message: User deleted successfully
+ *               user: { "id": "1", "name": "Deleted Name", "email": "deleted@example.com" }
  *       404:
  *         description: User not found
  *         content:
