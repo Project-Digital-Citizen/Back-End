@@ -90,6 +90,15 @@ async function verifyOTP(req, res) {
             });
         }
 
+        // Check if OTP has expired
+        if (savedOTP.createdAt < new Date()) {
+            // OTP has expired
+            return res.status(400).json({
+                status: 'error',
+                message: 'OTP has expired',
+            });
+        }
+
         // Update user's isActive status to true
         const user = await User.findOne({
             email
@@ -122,6 +131,7 @@ async function verifyOTP(req, res) {
         });
     }
 }
+
 
 async function login(req, res) {
     try {

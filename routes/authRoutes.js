@@ -86,12 +86,12 @@ router.post('/register', register);
  *               status: success
  *               message: User verified successfully
  *       400:
- *         description: Invalid OTP
+ *         description: Invalid OTP or OTP has expired
  *         content:
  *           application/json:
  *             example:
  *               status: error
- *               message: Invalid OTP
+ *               message: Invalid OTP or OTP has expired
  *       404:
  *         description: User not found
  *         content:
@@ -108,6 +108,7 @@ router.post('/register', register);
  *               error: Internal Server Error
  */
 router.post('/verify-otp', verifyOTP);
+
 
 /**
  * @swagger
