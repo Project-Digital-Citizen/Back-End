@@ -36,6 +36,23 @@ async function getSubmissionStatus(req, res) {
     }
 }
 
+async function getAllSubmissionStatus(req, res) {
+    try {
+        const submissionStatuses = await SubmissionStatus.find();
+        res.status(200).json({
+            status: 'success',
+            data: submissionStatuses,
+        });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({
+            status: 'error',
+            error: error.message,
+        });
+    }
+}
+
 module.exports = {
     getSubmissionStatus,
+    getAllSubmissionStatus
 };

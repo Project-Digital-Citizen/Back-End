@@ -101,6 +101,13 @@ const ktpController = require('../controllers/ktpController');
  *   post:
  *     summary: Register a new KTP user with image uploads
  *     tags: [KTP]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: ID of the user submitting the KTP registration
+ *         schema:
+ *           type: string
  *     requestBody:
  *       required: true
  *       content:
@@ -117,6 +124,14 @@ const ktpController = require('../controllers/ktpController');
  *               message: KTP registered successfully
  *               kkImageUrl: http://localhost:3000/images/kkImage-1234567890.png
  *               selfieImageUrl: http://localhost:3000/images/selfieImage-0987654321.png
+ *               submissionStatus:
+ *                 _id: 1234567890abcdef12345678
+ *                 iduser: 9876543210fedcba09876543
+ *                 submissionDate: '2023-01-15T00:00:00.000Z'
+ *                 rejectionDate: null
+ *                 acceptanceDate: null
+ *                 rejectionReason: null
+ *                 acceptanceReason: null
  *       500:
  *         description: Internal Server Error
  *         content:
@@ -126,8 +141,8 @@ const ktpController = require('../controllers/ktpController');
  *               error: Internal Server Error
  */
 
+router.post('/:id', ktpController.registerKtpUser);
 
-router.post('/', ktpController.registerKtpUser);
 
 /**
  * @swagger

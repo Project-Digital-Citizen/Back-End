@@ -2,6 +2,15 @@
 const mongoose = require('mongoose');
 
 const submissionStatusSchema = new mongoose.Schema({
+    iduser: {
+        type: String,
+        required: true,
+    },
+    idktp: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'KtpUser',
+        required: true,
+    },
     submissionDate: {
         type: Date,
         required: true,

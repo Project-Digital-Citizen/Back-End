@@ -86,6 +86,17 @@ async function registerKtpUser(req, res) {
     const selfieImageUrl = `${req.protocol}://${req.get('host')}/images/${selfieImage.filename}`;
 
     try {
+      const existingUser = await KtpUser.findOne({
+        NIK
+      });
+
+      if (existingUser) {
+        return res.status(400).json({
+          status: 'error',
+          message: 'NIK already exists in the database',
+        });
+      }
+      
       const ktpUser = new KtpUser({
         nama,
         NIK,
@@ -106,15 +117,20 @@ async function registerKtpUser(req, res) {
 
       await ktpUser.save();
 
+      // Retrieve user ID from the request parameters
+      const userId = req.params.id;
+
       // Set initial submission status
       const submissionStatus = new SubmissionStatus({
+        iduser: userId,
+        idktp: ktpUser._id,
         submissionDate: Date.now(),
       });
       await submissionStatus.save();
 
       // Update user with submission status
       await KtpUser.findByIdAndUpdate(ktpUser._id, {
-        submissionStatus: submissionStatus._id
+        submissionStatus: submissionStatus._id,
       });
 
       res.status(201).json({

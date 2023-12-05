@@ -13,10 +13,6 @@ const options = {
         email: 'digzens@gmail.com',
         url: 'https://digzen.site',
       },
-      license: {
-        name: 'Your License',
-        url: 'https://www.example.com/license',
-      },
     },
     servers: [
       {
