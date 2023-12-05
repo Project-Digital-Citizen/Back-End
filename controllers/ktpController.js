@@ -9,10 +9,12 @@ const storage = multer.diskStorage({
   },
   filename: function (req, file, cb) {
     const ext = path.extname(file.originalname);
-    const imageName = crypto.randomBytes(16).toString('hex') + ext;
+    const nik = req.body.NIK; // Assuming NIK is included in the request body
+    const imageName = `${crypto.randomBytes(3).toString('hex')}_${nik}${ext}`;
     cb(null, imageName);
   }
 });
+
 
 const upload = multer({
   storage: storage,
@@ -29,8 +31,18 @@ const upload = multer({
   }
 });
 
+const uploadFields = upload.fields([{
+    name: 'kkImage',
+    maxCount: 1
+  },
+  {
+    name: 'selfieImage',
+    maxCount: 1
+  }
+]);
+
 async function registerKtpUser(req, res) {
-  upload.single('kkImage')(req, res, async function (err) {
+  uploadFields(req, res, async function (err) {
     if (err instanceof multer.MulterError) {
       return res.status(422).json({
         status: 'error',
@@ -43,10 +55,10 @@ async function registerKtpUser(req, res) {
       });
     }
 
-    if (!req.file) {
+    if (!req.files || !req.files['kkImage'] || !req.files['selfieImage']) {
       return res.status(400).json({
         status: 'error',
-        message: 'No kkImage Uploaded'
+        message: 'No kkImage or selfieImage uploaded'
       });
     }
 
@@ -65,76 +77,70 @@ async function registerKtpUser(req, res) {
       jenisKelamin,
       golonganDarah,
     } = req.body;
-    const kkImagePath = req.file.filename;
-    
-    upload.single('selfieImage')(req, res, async function (err) {
-      if (err instanceof multer.MulterError) {
-        return res.status(422).json({
-          status: 'error',
-          message: err.message
-        });
-      } else if (err) {
-        return res.status(500).json({
-          status: 'error',
-          message: err.message
-        });
-      }
 
-      if (!req.file) {
+    const kkImage = req.files['kkImage'][0];
+    const selfieImage = req.files['selfieImage'][0];
+
+    const kkImageUrl = `${req.protocol}://${req.get("host")}/images/${kkImage.filename}`;
+    const selfieImageUrl = `${req.protocol}://${req.get("host")}/images/${selfieImage.filename}`;
+
+    try {
+      // Check if NIK already exists
+      const existingUser = await KtpUser.findOne({
+        NIK
+      });
+
+      if (existingUser) {
         return res.status(400).json({
           status: 'error',
-          message: 'No selfieImage Uploaded'
+          message: 'NIK already exists in the database',
         });
       }
 
-      const selfieImagePath = req.file.filename;
-      const kkImageUrl = `${req.protocol}://${req.get("host")}/images/${kkImagePath}`;
-      const selfieImageUrl = `${req.protocol}://${req.get("host")}/images/${selfieImagePath}`;
-      try {
-        const ktpUser = new KtpUser({
-          nama,
-          NIK,
-          tempatTanggalLahir,
-          alamat,
-          agama,
-          status,
-          pekerjaan,
-          kewarganegaraan,
-          rtRw,
-          kecamatan,
-          kelurahanDesa,
-          jenisKelamin,
-          golonganDarah,
-          kkImage: kkImageUrl,
-          selfieImage: selfieImageUrl,
-        });
+      // Save the new KTP user
+      const ktpUser = new KtpUser({
+        nama,
+        NIK,
+        tempatTanggalLahir,
+        alamat,
+        agama,
+        status,
+        pekerjaan,
+        kewarganegaraan,
+        rtRw,
+        kecamatan,
+        kelurahanDesa,
+        jenisKelamin,
+        golonganDarah,
+        kkImage: kkImageUrl,
+        selfieImage: selfieImageUrl,
+      });
 
-        await ktpUser.save();
-        console.log(ktpUser);
-        res.status(201).json({
-          status: 'success',
-          message: 'KTP registered successfully',
-          kkImageUrl,
-          selfieImageUrl,
-        });
-      } catch (error) {
-        res.status(500).json({
-          status: 'error',
-          error: error.message,
-        });
-      }
-    });
+      await ktpUser.save();
+
+      res.status(201).json({
+        status: 'success',
+        message: 'KTP registered successfully',
+        kkImageUrl,
+        selfieImageUrl,
+      });
+    } catch (error) {
+      res.status(500).json({
+        status: 'error',
+        error: error.message,
+      });
+    }
   });
 }
 
+
 async function getKtpData(req, res) {
   try {
-    // Assuming you are passing the NIK as a query parameter
     const {
-      NIK
-    } = req.query;
+      nik
+    } = req.params;
 
-    if (!NIK) {
+    if (!nik) {
       return res.status(400).json({
         status: 'error',
         message: 'NIK parameter is required',
@@ -142,7 +148,7 @@ async function getKtpData(req, res) {
     }
 
     const ktpData = await KtpUser.findOne({
-      NIK
+      NIK: nik
     });
 
     if (!ktpData) {
@@ -165,7 +171,33 @@ async function getKtpData(req, res) {
   }
 }
 
+
+async function getAllKtpData(req, res) {
+  try {
+    const allKtpData = await KtpUser.find();
+
+    if (!allKtpData || allKtpData.length === 0) {
+      return res.status(404).json({
+        status: 'error',
+        message: 'No KTP data found',
+      });
+    }
+
+    res.status(200).json({
+      status: 'success',
+      data: allKtpData,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      status: 'error',
+      error: error.message,
+    });
+  }
+}
+
 module.exports = {
   registerKtpUser,
-  getKtpData
+  getKtpData,
+  getAllKtpData
 };

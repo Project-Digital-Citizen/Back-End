@@ -128,7 +128,83 @@ const ktpController = require('../controllers/ktpController');
 
 
 router.post('/', ktpController.registerKtpUser);
+
+/**
+ * @swagger
+ * /ktp/{nik}:
+ *   get:
+ *     summary: Get KTP data by NIK
+ *     tags: [KTP]
+ *     parameters:
+ *       - in: path
+ *         name: nik
+ *         required: true
+ *         description: National Identification Number (NIK) of the user
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Successful operation
+ *         content:
+ *           application/json:
+ *             example:
+ *               status: success
+ *               data:
+ *                 nama: John Doe
+ *                 NIK: 1234567890123456
+ *                 tempatTanggalLahir: Jakarta, 01-01-1990
+ *                 alamat: Jl. Example Street No. 123
+ *                 agama: Islam
+ *                 status: Married
+ *                 pekerjaan: Engineer
+ *                 kewarganegaraan: Indonesian
+ *                 rtRw: 001/002
+ *                 kecamatan: South Jakarta
+ *                 kelurahanDesa: Example Village
+ *                 jenisKelamin: Male
+ *                 golonganDarah: A
+ *                 kkImage: http://localhost:3000/images/kkImage-1234567890.png
+ *                 selfieImage: http://localhost:3000/images/selfieImage-0987654321.png
+ *       404:
+ *         description: KTP data not found
+ *         content:
+ *           application/json:
+ *             example:
+ *               status: error
+ *               message: KTP data not found
+ *       500:
+ *         description: Internal Server Error
+ *         content:
+ *           application/json:
+ *             example:
+ *               status: error
+ *               error: Internal Server Error
+ */
 router.get('/:nik', ktpController.getKtpData);
+
+/**
+ * @swagger
+ * /ktp:
+ *   get:
+ *     summary: Get all KTP data
+ *     tags: [KTP]
+ *     responses:
+ *       200:
+ *         description: Successful operation
+ *         content:
+ *           application/json:
+ *             example:
+ *               status: success
+ *               data: [{ KTP data object }, { KTP data object }]
+ *       500:
+ *         description: Internal Server Error
+ *         content:
+ *           application/json:
+ *             example:
+ *               status: error
+ *               error: Internal Server Error
+ */
+router.get('/', ktpController.getAllKtpData);
 
 // Add other routes as needed
 

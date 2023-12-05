@@ -18,13 +18,14 @@ const options = {
         url: 'https://www.example.com/license',
       },
     },
-    servers: [{
-        url: 'http://localhost:3000', // Your server URL
-        description: 'Local Development Server',
-      },
+    servers: [
       {
         url: 'https://api.digzen.site', // Your server URL
         description: 'Online Development Server',
+      },
+      {
+        url: 'http://localhost:3000', // Your server URL
+        description: 'Local Development Server',
       },
     ],
   },

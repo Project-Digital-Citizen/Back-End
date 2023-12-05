@@ -62,10 +62,6 @@ const ktpUserSchema = new mongoose.Schema({
         type: String, // File path
         required: true,
     },
-    isActive: {
-        type: Boolean,
-        default: false,
-    },
 });
 
 const KtpUser = mongoose.model('KtpUser', ktpUserSchema);
