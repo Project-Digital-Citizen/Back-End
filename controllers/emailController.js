@@ -35,7 +35,7 @@ async function sendOTP({
             return existingOTP.otp;
         } else {
             // Generate a new OTP
-            const otp = generateOTP(6);
+            const otp = generateOTP(4);
 
             // Save the new OTP in the database or update the existing record
             await OTP.findOneAndUpdate({
@@ -88,7 +88,7 @@ async function resendOTP(req, res) {
         }
 
         // Generate a new OTP
-        const newOTP = generateOTP(6);
+        const newOTP = generateOTP(4);
 
         // Save the new OTP in the database or update the existing record
         await OTP.findOneAndUpdate({
