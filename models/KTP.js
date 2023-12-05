@@ -55,11 +55,11 @@ const ktpUserSchema = new mongoose.Schema({
         required: true,
     },
     kkImage: {
-        type: Buffer, // File path or Base64 representation
+        type: String, // File path
         required: true,
     },
     selfieImage: {
-        type: Buffer, // File path or Base64 representation
+        type: String, // File path
         required: true,
     },
     isActive: {

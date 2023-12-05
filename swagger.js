@@ -1,22 +1,39 @@
-// swagger.js
 const swaggerJsdoc = require('swagger-jsdoc');
 const swaggerUi = require('swagger-ui-express');
 
 const options = {
-     definition: {
+  definition: {
     openapi: '3.0.0',
     info: {
       title: 'Digzen API',
-      version: '1.0.0', // Mengambil versi dari package.json
+      version: '1.0.0', // Take the version from package.json
       description: 'Documentation for Digzen API',
+      contact: {
+        name: 'Digzen',
+        email: 'digzens@gmail.com',
+        url: 'https://digzen.site',
+      },
+      license: {
+        name: 'Your License',
+        url: 'https://www.example.com/license',
+      },
     },
+    servers: [{
+        url: 'http://localhost:3000', // Your server URL
+        description: 'Local Development Server',
+      },
+      {
+        url: 'https://api.digzen.site', // Your server URL
+        description: 'Online Development Server',
+      },
+    ],
   },
-    apis: ['./routes/*.js'], // Sesuaikan dengan lokasi file-file route Anda
+  apis: ['./routes/*.js'], // Adjust the location of your route files
 };
 
 const specs = swaggerJsdoc(options);
 
 module.exports = {
-    swaggerUi,
-    specs
+  swaggerUi,
+  specs,
 };

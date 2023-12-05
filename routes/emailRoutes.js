@@ -7,11 +7,18 @@ const {
 
 // POST send OTP email
 router.post('/send-otp', sendOTP);
+/**
+ * @swagger
+ * tags:
+ *   name: Email
+ *   description: Email operations
+ */
 
 /**
  * @swagger
  * /email/resend-otp:
  *   post:
+ *     tags: [Email]
  *     summary: Resend OTP if expired or not received
  *     requestBody:
  *       content:

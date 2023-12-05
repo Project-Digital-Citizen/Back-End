@@ -10,8 +10,16 @@ const {
 
 /**
  * @swagger
+ * tags:
+ *   name: USER
+ *   description: USER operations
+ */
+/**
+
+ * @swagger
  * /users/{id}:
  *   get:
+ *     tags: [USER]
  *     summary: Get a single user by ID
  *     parameters:
  *       - in: path
@@ -48,6 +56,7 @@ router.get('/:id', getUser);
  * @swagger
  * /users:
  *   get:
+ *     tags: [USER]
  *     summary: Get all users
  *     responses:
  *       200:
@@ -70,6 +79,7 @@ router.get('/', getUsers);
  * @swagger
  * /users/{id}:
  *   put:
+ *     tags: [USER]
  *     summary: Update user by ID
  *     parameters:
  *       - in: path
@@ -137,6 +147,7 @@ router.put('/:id', updateUser);
  * @swagger
  * /users/{id}:
  *   delete:
+ *     tags: [USER]
  *     summary: Delete user by ID
  *     parameters:
  *       - in: path

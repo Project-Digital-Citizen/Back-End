@@ -7,11 +7,18 @@ const {
 } = require('../controllers/authController');
 
 const router = express.Router();
+/**
+ * @swagger
+ * tags:
+ *   name: AUTH
+ *   description: AUTH operations
+ */
 
 /**
  * @swagger
  * /auth/register:
  *   post:
+ *     tags: [AUTH]
  *     summary: Register a new user
  *     requestBody:
  *       content:
@@ -63,6 +70,7 @@ router.post('/register', register);
  * @swagger
  * /auth/verify-otp:
  *   post:
+ *     tags: [AUTH]
  *     summary: Verify user with OTP
  *     requestBody:
  *       content:
@@ -114,6 +122,7 @@ router.post('/verify-otp', verifyOTP);
  * @swagger
  * /auth/login:
  *   post:
+ *     tags: [AUTH]
  *     summary: Log in with existing user credentials
  *     requestBody:
  *       content:

@@ -1,100 +1,171 @@
 const KtpUser = require("../models/KTP");
+const multer = require("multer");
+const path = require("path");
+const crypto = require("crypto");
 
-async function saveImage(base64String, filePath) {
-  const imageBuffer = Buffer.from(base64String, "base64");
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, './public/images');
+  },
+  filename: function (req, file, cb) {
+    const ext = path.extname(file.originalname);
+    const imageName = crypto.randomBytes(16).toString('hex') + ext;
+    cb(null, imageName);
+  }
+});
 
-  // Menyimpan gambar ke file atau storage yang diinginkan
-  fs.writeFileSync(filePath, imageBuffer);
-
-  return filePath;
-}
+const upload = multer({
+  storage: storage,
+  limits: {
+    fileSize: 5000000
+  },
+  fileFilter: function (req, file, cb) {
+    const allowedTypes = ['.png', '.jpg', '.jpeg'];
+    const ext = path.extname(file.originalname);
+    if (!allowedTypes.includes(ext.toLowerCase())) {
+      return cb(new Error('Invalid Image Type'));
+    }
+    cb(null, true);
+  }
+});
 
 async function registerKtpUser(req, res) {
-  try {
-    const {
-      nama,
-      NIK,
-      tempattanggalLahir,
-      alamat,
-      agama,
-      status,
-      pekerjaan,
-      kewarganegaraan,
-      rtrw,
-      kecamatan,
-      kelurahandesa,
-      jeniskelamin,
-      golonganDarah,
-      kkImage,
-      selfieImage,
-    } = req.body;
-
-    // Menyimpan gambar ke file dengan menggunakan NIK sebagai bagian dari path
-    const kkImagePath = await saveImage(
-      kkImage,
-      `path/to/save/${NIK}_kkImage.png`
-    );
-    const selfieImagePath = await saveImage(
-      selfieImage,
-      `path/to/save/${NIK}_selfieImage.png`
-    );
-
-    // Check if NIK or nomor is already registered
-    const existingUser = await KtpUser.findOne({
-      $or: [
-        {
-          NIK,
-        },
-        {
-          nomor,
-        },
-      ],
-    });
-
-    if (existingUser) {
-      return res.status(400).json({
-        status: "error",
-        message: "NIK or nomor telepon is already registered",
+  upload.single('kkImage')(req, res, async function (err) {
+    if (err instanceof multer.MulterError) {
+      return res.status(422).json({
+        status: 'error',
+        message: err.message
+      });
+    } else if (err) {
+      return res.status(500).json({
+        status: 'error',
+        message: err.message
       });
     }
 
-    // Create a new user with additional KTP information
-    const ktpUser = new KtpUser({
+    if (!req.file) {
+      return res.status(400).json({
+        status: 'error',
+        message: 'No kkImage Uploaded'
+      });
+    }
+
+    const {
       nama,
       NIK,
-      tempattanggalLahir,
+      tempatTanggalLahir,
       alamat,
       agama,
       status,
       pekerjaan,
       kewarganegaraan,
-      rtrw,
+      rtRw,
       kecamatan,
-      kelurahandesa,
-      jeniskelamin,
+      kelurahanDesa,
+      jenisKelamin,
       golonganDarah,
-      kkImage: kkImagePath,
-      selfieImage: selfieImagePath,
+    } = req.body;
+    const kkImagePath = req.file.filename;
+    
+    upload.single('selfieImage')(req, res, async function (err) {
+      if (err instanceof multer.MulterError) {
+        return res.status(422).json({
+          status: 'error',
+          message: err.message
+        });
+      } else if (err) {
+        return res.status(500).json({
+          status: 'error',
+          message: err.message
+        });
+      }
+
+      if (!req.file) {
+        return res.status(400).json({
+          status: 'error',
+          message: 'No selfieImage Uploaded'
+        });
+      }
+
+      const selfieImagePath = req.file.filename;
+      const kkImageUrl = `${req.protocol}://${req.get("host")}/images/${kkImagePath}`;
+      const selfieImageUrl = `${req.protocol}://${req.get("host")}/images/${selfieImagePath}`;
+      try {
+        const ktpUser = new KtpUser({
+          nama,
+          NIK,
+          tempatTanggalLahir,
+          alamat,
+          agama,
+          status,
+          pekerjaan,
+          kewarganegaraan,
+          rtRw,
+          kecamatan,
+          kelurahanDesa,
+          jenisKelamin,
+          golonganDarah,
+          kkImage: kkImageUrl,
+          selfieImage: selfieImageUrl,
+        });
+
+        await ktpUser.save();
+        console.log(ktpUser);
+        res.status(201).json({
+          status: 'success',
+          message: 'KTP registered successfully',
+          kkImageUrl,
+          selfieImageUrl,
+        });
+      } catch (error) {
+        res.status(500).json({
+          status: 'error',
+          error: error.message,
+        });
+      }
+    });
+  });
+}
+
+async function getKtpData(req, res) {
+  try {
+    // Assuming you are passing the NIK as a query parameter
+    const {
+      NIK
+    } = req.query;
+
+    if (!NIK) {
+      return res.status(400).json({
+        status: 'error',
+        message: 'NIK parameter is required',
+      });
+    }
+
+    const ktpData = await KtpUser.findOne({
+      NIK
     });
 
-    // Save the user to the database
-    await ktpUser.save();
+    if (!ktpData) {
+      return res.status(404).json({
+        status: 'error',
+        message: 'KTP data not found',
+      });
+    }
 
-    res.status(201).json({
-      status: "success",
-      message: "KTP registered successfully",
+    res.status(200).json({
+      status: 'success',
+      data: ktpData,
     });
   } catch (error) {
+    console.error(error);
     res.status(500).json({
-      status: "error",
+      status: 'error',
       error: error.message,
     });
   }
 }
 
-// Add other controller functions as needed
-
 module.exports = {
   registerKtpUser,
-  // Add other exported functions here
+  getKtpData
 };
