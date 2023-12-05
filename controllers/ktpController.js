@@ -1,4 +1,5 @@
 const KtpUser = require("../models/KTP");
+const SubmissionStatus = require('../models/STATUS');
 const multer = require("multer");
 const path = require("path");
 const crypto = require("crypto");
@@ -46,19 +47,19 @@ async function registerKtpUser(req, res) {
     if (err instanceof multer.MulterError) {
       return res.status(422).json({
         status: 'error',
-        message: err.message
+        message: err.message,
       });
     } else if (err) {
       return res.status(500).json({
         status: 'error',
-        message: err.message
+        message: err.message,
       });
     }
 
     if (!req.files || !req.files['kkImage'] || !req.files['selfieImage']) {
       return res.status(400).json({
         status: 'error',
-        message: 'No kkImage or selfieImage uploaded'
+        message: 'No kkImage or selfieImage uploaded',
       });
     }
 
@@ -81,23 +82,10 @@ async function registerKtpUser(req, res) {
     const kkImage = req.files['kkImage'][0];
     const selfieImage = req.files['selfieImage'][0];
 
-    const kkImageUrl = `${req.protocol}://${req.get("host")}/images/${kkImage.filename}`;
-    const selfieImageUrl = `${req.protocol}://${req.get("host")}/images/${selfieImage.filename}`;
+    const kkImageUrl = `${req.protocol}://${req.get('host')}/images/${kkImage.filename}`;
+    const selfieImageUrl = `${req.protocol}://${req.get('host')}/images/${selfieImage.filename}`;
 
     try {
-      // Check if NIK already exists
-      const existingUser = await KtpUser.findOne({
-        NIK
-      });
-
-      if (existingUser) {
-        return res.status(400).json({
-          status: 'error',
-          message: 'NIK already exists in the database',
-        });
-      }
-
-      // Save the new KTP user
       const ktpUser = new KtpUser({
         nama,
         NIK,
@@ -118,11 +106,23 @@ async function registerKtpUser(req, res) {
 
       await ktpUser.save();
 
+      // Set initial submission status
+      const submissionStatus = new SubmissionStatus({
+        submissionDate: Date.now(),
+      });
+      await submissionStatus.save();
+
+      // Update user with submission status
+      await KtpUser.findByIdAndUpdate(ktpUser._id, {
+        submissionStatus: submissionStatus._id
+      });
+
       res.status(201).json({
         status: 'success',
         message: 'KTP registered successfully',
         kkImageUrl,
         selfieImageUrl,
+        submissionStatus,
       });
     } catch (error) {
       res.status(500).json({

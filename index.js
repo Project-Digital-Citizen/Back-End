@@ -7,6 +7,7 @@ const authRoutes = require('./routes/authRoutes');
 const userRoutes = require('./routes/userRoutes');
 const emailRoutes = require('./routes/emailRoutes');
 const ktpRoutes = require('./routes/ktpRoutes');
+const statusRoutes = require('./routes/statusRoutes');
 const {
     swaggerUi,
     specs
@@ -47,6 +48,7 @@ app.use('/auth', authRoutes);
 app.use('/users', userRoutes);
 app.use('/email', emailRoutes);
 app.use('/ktp', ktpRoutes);
+app.use('/status', statusRoutes);
 
 // Start the server
 const PORT = process.env.PORT || 3000;
