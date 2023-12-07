@@ -4,22 +4,7 @@ const User = require('../models/User');
 
 async function getUser(req, res) {
     try {
-        let userId;
-
-        // Check if the user ID is present in the request parameters
-        if (req.params.id) {
-            userId = req.params.id;
-        } else {
-            // Check if the user ID is present in the query parameters
-            userId = req.query.id;
-
-            if (!userId) {
-                return res.status(400).json({
-                    status: 'error',
-                    message: 'User ID is required',
-                });
-            }
-        }
+        const userId = req.params.id;
 
         // Find the user by ID
         const user = await User.findById(userId);
