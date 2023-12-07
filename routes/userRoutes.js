@@ -50,7 +50,7 @@ const {
  *               status: error
  *               error: Internal Server Error
  */
-router.get('/', getUser);
+router.get('/:id', getUser);
 
 /**
  * @swagger
