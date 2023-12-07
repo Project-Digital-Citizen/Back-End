@@ -180,7 +180,6 @@ async function login(req, res) {
         res.status(200).json({
             status: 'success',
             token,
-            user, // Send user data in the response
         });
     } catch (error) {
         res.status(500).json({
