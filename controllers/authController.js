@@ -41,6 +41,9 @@ async function register(req, res) {
         // Hash the password
         const hashedPassword = await bcrypt.hash(password, 10);
 
+        // Create a new user with default role 'user' if not provided
+        const role = req.body.role || 'user';
+
         // Create a new user
         const user = new User({
             email,
@@ -48,6 +51,7 @@ async function register(req, res) {
             nama,
             password: hashedPassword,
             NIK,
+            role,
         });
 
         // Save the user to the database
@@ -132,7 +136,6 @@ async function verifyOTP(req, res) {
     }
 }
 
-
 async function login(req, res) {
     try {
         const {
@@ -171,12 +174,13 @@ async function login(req, res) {
 
         // Set cookie with the token
         res.cookie('token', token, {
-            httpOnly: true
+            httpOnly: true,
         });
 
         res.status(200).json({
             status: 'success',
             token,
+            user, // Send user data in the response
         });
     } catch (error) {
         res.status(500).json({
@@ -185,7 +189,6 @@ async function login(req, res) {
         });
     }
 }
-
 
 module.exports = {
     register,

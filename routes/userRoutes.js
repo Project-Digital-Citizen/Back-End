@@ -14,8 +14,8 @@ const {
  *   name: USER
  *   description: USER operations
  */
-/**
 
+/**
  * @swagger
  * /users/{id}:
  *   get:
@@ -34,6 +34,7 @@ const {
  *         content:
  *           application/json:
  *             example:
+ *               status: success
  *               user: { "id": "1", "name": "John Doe", "email": "john@example.com" }
  *       404:
  *         description: User not found
@@ -64,6 +65,7 @@ router.get('/:id', getUser);
  *         content:
  *           application/json:
  *             example:
+ *               status: success
  *               users: [{ "id": "1", "name": "John Doe", "email": "john@example.com" }]
  *       500:
  *         description: Internal Server Error
@@ -103,6 +105,8 @@ router.get('/', getUsers);
  *               password:
  *                 type: string
  *               NIK:
+ *                 type: string
+ *               role:
  *                 type: string
  *             required:
  *               - email

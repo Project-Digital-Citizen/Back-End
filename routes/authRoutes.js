@@ -7,6 +7,7 @@ const {
 } = require('../controllers/authController');
 
 const router = express.Router();
+
 /**
  * @swagger
  * tags:
@@ -35,6 +36,8 @@ const router = express.Router();
  *               password:
  *                 type: string
  *               NIK:
+ *                 type: string
+ *               role:
  *                 type: string
  *             required:
  *               - email
@@ -117,7 +120,6 @@ router.post('/register', register);
  */
 router.post('/verify-otp', verifyOTP);
 
-
 /**
  * @swagger
  * /auth/login:
@@ -143,7 +145,9 @@ router.post('/verify-otp', verifyOTP);
  *         content:
  *           application/json:
  *             example:
+ *               status: success
  *               token: <JWT Token>
+ *               user: { "id": "1", "email": "user@example.com", "nama": "John Doe", "NIK": "1234567890", "role": "user" }
  *       401:
  *         description: Invalid email or password
  *         content:

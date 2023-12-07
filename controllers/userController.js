@@ -53,7 +53,8 @@ async function updateUser(req, res) {
             nomor,
             nama,
             password,
-            NIK
+            NIK,
+            role = 'user', // Set default role to 'user' if not provided
         } = req.body;
 
         // Find the user by ID
@@ -72,6 +73,7 @@ async function updateUser(req, res) {
         user.nama = nama || user.nama;
         user.password = password ? await bcrypt.hash(password, 10) : user.password; // Hash password if provided
         user.NIK = NIK || user.NIK;
+        user.role = role;
 
         // Save the updated user
         await user.save();
