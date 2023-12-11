@@ -1,5 +1,6 @@
 require('dotenv').config()
 const express = require('express');
+const fs = require('fs');
 const cookieParser = require('cookie-parser');
 const cors = require("cors");
 const path = require("path");
@@ -28,10 +29,49 @@ connectDatabase();
 
 app.get('/images/:filename', (req, res) => {
     const filename = req.params.filename;
-    const imagePath = path.join(__dirname, 'public', 'images', filename);
-    res.set('Content-Type', 'image/jpeg'); // Atur tipe konten gambar
-    res.sendFile(imagePath);
+    const imagePath = getImagePath(filename);
+
+    if (imagePath) {
+        res.set('Content-Type', 'image/jpeg');
+        res.sendFile(imagePath);
+    } else {
+        res.status(404).send('Image not found');
+    }
 });
+
+function getImagePath(filename) {
+    const imagesPath = path.join(__dirname, 'public', 'images');
+
+    // Recursively scan directories and subdirectories
+    function scanDirectories(directory) {
+        const files = fs.readdirSync(directory);
+
+        for (const file of files) {
+            const filePath = path.join(directory, file);
+
+            // Check if it's a directory
+            if (fs.statSync(filePath).isDirectory()) {
+                // Recursively scan the subdirectory
+                const subdirectoryPath = scanDirectories(filePath);
+
+                // If the file is found in the subdirectory, return its path
+                if (subdirectoryPath) {
+                    return subdirectoryPath;
+                }
+            } else if (file === filename) {
+                // If the file is found in the current directory, return its path
+                return filePath;
+            }
+        }
+
+        // If the file is not found in this directory or its subdirectories
+        return null;
+    }
+
+    return scanDirectories(imagesPath);
+}
+
+
 
 // Home route
 app.get('/', (req, res) => {
