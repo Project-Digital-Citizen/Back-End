@@ -62,6 +62,14 @@ const ktpUserSchema = new mongoose.Schema({
         type: String, // File path
         required: true,
     },
+    suratRTImage: {
+            type: String, // File path
+            required: true,
+        },
+    suratRWImage: {
+            type: String, // File path
+            required: true,
+    },
 });
 
 const KtpUser = mongoose.model('KtpUser', ktpUserSchema);
