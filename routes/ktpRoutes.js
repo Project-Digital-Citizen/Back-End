@@ -29,6 +29,10 @@ const ktpController = require('../controllers/ktpController');
  *         - kelurahanDesa
  *         - jenisKelamin
  *         - golonganDarah
+ *         - kkImage
+ *         - selfieImage
+ *         - suratRTImage
+ *         - suratRWImage
  *       properties:
  *         nama:
  *           type: string
@@ -77,6 +81,14 @@ const ktpController = require('../controllers/ktpController');
  *           type: string
  *           format: binary
  *           description: File containing the user's selfie image
+ *         suratRTImage:
+ *           type: string
+ *           format: binary
+ *           description: File containing the user's Surat RT image
+ *         suratRWImage:
+ *           type: string
+ *           format: binary
+ *           description: File containing the user's Surat RW image
  *       example:
  *         nama: John Doe
  *         NIK: 1234567890123456
@@ -93,7 +105,10 @@ const ktpController = require('../controllers/ktpController');
  *         golonganDarah: A
  *         kkImage: (binary data)
  *         selfieImage: (binary data)
+ *         suratRTImage: (binary data)
+ *         suratRWImage: (binary data)
  */
+
 
 /**
  * @swagger
@@ -122,16 +137,6 @@ const ktpController = require('../controllers/ktpController');
  *             example:
  *               status: success
  *               message: KTP registered successfully
- *               kkImageUrl: http://localhost:3000/images/kkImage-1234567890.png
- *               selfieImageUrl: http://localhost:3000/images/selfieImage-0987654321.png
- *               submissionStatus:
- *                 _id: 1234567890abcdef12345678
- *                 iduser: 9876543210fedcba09876543
- *                 submissionDate: '2023-01-15T00:00:00.000Z'
- *                 rejectionDate: null
- *                 acceptanceDate: null
- *                 rejectionReason: null
- *                 acceptanceReason: null
  *       500:
  *         description: Internal Server Error
  *         content:

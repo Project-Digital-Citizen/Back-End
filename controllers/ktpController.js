@@ -2,20 +2,41 @@ const KtpUser = require("../models/KTP");
 const SubmissionStatus = require('../models/STATUS');
 const multer = require("multer");
 const path = require("path");
-const crypto = require("crypto");
+const fs = require("fs");
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, './public/images');
+    // Retrieve NIK from request body or use 'unknown' if not present
+    const nik = req.body.NIK || 'unknown';
+
+    // Create a new folder for each user based on their NIK
+    const userFolder = `./public/images/${nik}`;
+    fs.mkdirSync(userFolder, {
+      recursive: true
+    });
+
+    // Set the destination path to the user-specific folder
+    cb(null, userFolder);
   },
   filename: function (req, file, cb) {
     const ext = path.extname(file.originalname);
-    const nik = req.body.NIK; // Assuming NIK is included in the request body
-    const imageName = `${crypto.randomBytes(3).toString('hex')}_${nik}${ext}`;
+    const nik = req.body.NIK || 'unknown';
+    // Determine suratType based on file name
+    let suratType = 'unknown';
+    if (file.fieldname.toLowerCase().includes('kkimage')) {
+      suratType = 'kk';
+    } else if (file.fieldname.toLowerCase().includes('selfieimage')) {
+      suratType = 'selfie';
+    } else if (file.fieldname.toLowerCase().includes('suratrtimage')) {
+      suratType = 'rt';
+    } else if (file.fieldname.toLowerCase().includes('suratrwimage')) {
+      suratType = 'rw';
+    }
+
+    const imageName = `Foto_${suratType}_${nik}${ext}`;
     cb(null, imageName);
   }
 });
-
 
 const upload = multer({
   storage: storage,
@@ -39,6 +60,14 @@ const uploadFields = upload.fields([{
   {
     name: 'selfieImage',
     maxCount: 1
+  },
+  {
+    name: 'suratRTImage',
+    maxCount: 1
+  },
+  {
+    name: 'suratRWImage',
+    maxCount: 1
   }
 ]);
 
@@ -56,10 +85,10 @@ async function registerKtpUser(req, res) {
       });
     }
 
-    if (!req.files || !req.files['kkImage'] || !req.files['selfieImage']) {
+    if (!req.files || !req.files['kkImage'] || !req.files['selfieImage'] || !req.files['suratRTImage'] || !req.files['suratRWImage']) {
       return res.status(400).json({
         status: 'error',
-        message: 'No kkImage or selfieImage uploaded',
+        message: 'Required images are missing',
       });
     }
 
@@ -81,9 +110,13 @@ async function registerKtpUser(req, res) {
 
     const kkImage = req.files['kkImage'][0];
     const selfieImage = req.files['selfieImage'][0];
+    const suratRTImage = req.files['suratRTImage'][0];
+    const suratRWImage = req.files['suratRWImage'][0];
 
     const kkImageUrl = `${req.protocol}://${req.get('host')}/images/${kkImage.filename}`;
     const selfieImageUrl = `${req.protocol}://${req.get('host')}/images/${selfieImage.filename}`;
+    const suratRTImageUrl = `${req.protocol}://${req.get('host')}/images/${suratRTImage.filename}`;
+    const suratRWImageUrl = `${req.protocol}://${req.get('host')}/images/${suratRWImage.filename}`;
 
     try {
       const existingUser = await KtpUser.findOne({
@@ -96,7 +129,7 @@ async function registerKtpUser(req, res) {
           message: 'NIK already exists in the database',
         });
       }
-      
+
       const ktpUser = new KtpUser({
         nama,
         NIK,
@@ -113,6 +146,8 @@ async function registerKtpUser(req, res) {
         golonganDarah,
         kkImage: kkImageUrl,
         selfieImage: selfieImageUrl,
+        suratRTImage: suratRTImageUrl,
+        suratRWImage: suratRWImageUrl,
       });
 
       await ktpUser.save();
@@ -136,9 +171,6 @@ async function registerKtpUser(req, res) {
       res.status(201).json({
         status: 'success',
         message: 'KTP registered successfully',
-        kkImageUrl,
-        selfieImageUrl,
-        submissionStatus,
       });
     } catch (error) {
       res.status(500).json({
