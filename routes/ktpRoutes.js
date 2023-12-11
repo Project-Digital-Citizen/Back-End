@@ -112,7 +112,7 @@ const ktpController = require('../controllers/ktpController');
 
 /**
  * @swagger
- * /ktp:
+ * /ktp/{id}:
  *   post:
  *     summary: Register a new KTP user with image uploads
  *     tags: [KTP]
@@ -226,6 +226,58 @@ router.get('/:nik', ktpController.getKtpData);
  */
 router.get('/', ktpController.getAllKtpData);
 
-// Add other routes as needed
+/**
+ * @swagger
+ * /ktp/{id}:
+ *   delete:
+ *     summary: Delete KTP data by user ID and NIK
+ *     tags: [KTP]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: ID of the user
+ *         schema:
+ *           type: string
+ *       - in: body
+ *         name: NIK
+ *         required: true
+ *         description: National Identification Number (NIK) of the KTP data to be deleted
+ *         schema:
+ *           type: object
+ *           properties:
+ *             NIK:
+ *               type: string
+ *     responses:
+ *       200:
+ *         description: KTP data deleted successfully
+ *         content:
+ *           application/json:
+ *             example:
+ *               status: success
+ *               message: KTP data deleted successfully
+ *       403:
+ *         description: Unauthorized
+ *         content:
+ *           application/json:
+ *             example:
+ *               status: error
+ *               message: Unauthorized to delete this KTP data
+ *       404:
+ *         description: KTP data not found
+ *         content:
+ *           application/json:
+ *             example:
+ *               status: error
+ *               message: KTP data not found
+ *       500:
+ *         description: Internal Server Error
+ *         content:
+ *           application/json:
+ *             example:
+ *               status: error
+ *               error: Internal Server Error
+ */
+router.delete('/:id', ktpController.deleteKtpByUserId);
 
 module.exports = router;

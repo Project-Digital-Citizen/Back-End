@@ -244,8 +244,59 @@ async function getAllKtpData(req, res) {
   }
 }
 
+async function deleteKtpByUserId(req, res) {
+  try {
+    const {
+      id: userId
+    } = req.params;
+    const {
+      NIK
+    } = req.body;
+    console.log(NIK);
+    // Assuming you have a proper authentication mechanism to validate the user's authority to delete the KTP
+
+    // Find the KTP user based on NIK
+    const ktpUser = await KtpUser.findOne({
+      NIK
+    });
+
+    if (!ktpUser) {
+      return res.status(404).json({
+        status: 'error',
+        message: 'KTP data not found',
+      });
+    }
+
+    // Check if the user has the authority to delete this KTP
+    if (ktpUser.submissionStatus.iduser.toString() !== userId) {
+      return res.status(403).json({
+        status: 'error',
+        message: 'Unauthorized to delete this KTP data',
+      });
+    }
+
+    // Delete the KTP user
+    await KtpUser.findByIdAndRemove(ktpUser._id);
+
+    // Also, you might want to remove related submission status
+    await SubmissionStatus.findByIdAndRemove(ktpUser.submissionStatus._id);
+
+    res.status(200).json({
+      status: 'success',
+      message: 'KTP data deleted successfully',
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      status: 'error',
+      error: error.message,
+    });
+  }
+}
+
 module.exports = {
   registerKtpUser,
   getKtpData,
-  getAllKtpData
+  getAllKtpData,
+  deleteKtpByUserId
 };
