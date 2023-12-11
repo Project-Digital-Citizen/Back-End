@@ -171,7 +171,6 @@ async function registerKtpUser(req, res) {
       res.status(201).json({
         status: 'success',
         message: 'KTP registered successfully',
-        ktpUser
       });
     } catch (error) {
       res.status(500).json({

@@ -183,8 +183,10 @@ router.post('/:id', ktpController.registerKtpUser);
  *                 kelurahanDesa: Example Village
  *                 jenisKelamin: Male
  *                 golonganDarah: A
- *                 kkImage: http://localhost:3000/images/kkImage-1234567890.png
- *                 selfieImage: http://localhost:3000/images/selfieImage-0987654321.png
+ *                 kkImage: http://localhost:3000/images/Foto_kk_528323232323001.png
+ *                 selfieImage: http://localhost:3000/images/Foto_selfie_528323232323001.png
+ *                 suratRTImage: http://localhost:3000/images/Foto_rt_528323232323001.png
+ *                 suratRWImage: http://localhost:3000/images/Foto_rw_528323232323001.png
  *       404:
  *         description: KTP data not found
  *         content:
