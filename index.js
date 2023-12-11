@@ -15,8 +15,7 @@ const { connectDatabase } = require("./db/database");
 const app = express();
 
 app.options("*", cors());
-// app.use(cors("*"));
-app.use(cors({ origin: "https://api.digzen.site/", credentials: true }));
+app.use(cors("*"));
 app.use(express.json());
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
