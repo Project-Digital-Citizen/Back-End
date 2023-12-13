@@ -30,57 +30,58 @@ const domisiliController = require('../controllers/domisiliController');
  *         - DomisiliKeluargaPindahImage
  *       properties:
  *         kk:
- *           type: String
+ *           type: string
  *           description: No. KK of the user
  *         kepalaKeluarga:
- *           type: String
+ *           type: string
  *           description: Head of Family of the user
  *         alamatBaru:
- *           type: String
+ *           type: string
  *           description: New Address of the user
- *         provinsi: {
- *           type: String
+ *         provinsi:
+ *           type: string
  *           description: Province of the user
  *         kabupatenKota:
- *           type: String
+ *           type: string
  *           description: Regency of the user
  *         kecamatan:
- *           type: String
+ *           type: string
  *           description: Subdistrict of the user
  *         kelurahanDesa:
- *           type: String
+ *           type: string
  *           description: Ward of the user
  *         klasifikasiPindah:
- *           type: String
+ *           type: string
  *           description: Classification of the user
  *         NIKPindah:
- *           type: String
+ *           type: string
  *           description: NIK Moved of the user
  *         alasanPindah:
- *           type: String
+ *           type: string
  *           description: The Reason Moved of the user
  *         kkDaerahAsalImage:
- *           type: String
+ *           type: string
  *           format: binary
  *           description: File containing the KK (Family Card) image
  *         DomisiliKeluargaPindahImage:
- *           type: String
+ *           type: string
  *           format: binary
  *           description: File containing the Domisili (Identity Card) image
  *       example:
- *         kk: 93478563975463
- *         kepalaKeluarga: Jhon Die
- *         alamatBaru: Jl. Example Street No. 123
- *         provisi: Jawa Barat
- *         kabupatenKota: Bekasi Utara
- *         kecamatan: South Jakarta
- *         kelurahanDesa: Example Village
- *         klasifikasiPindah: Antar Kota Dalam Provinsi
- *         NIKPindah: 5983475245
- *         alasanPindah: Pekerjaan
- *         kkDaerahAsalImage: (binary data)
- *         DomisiliKeluargaPindahImage: (binary data)
+ *         kk: "93478563975463"
+ *         kepalaKeluarga: "Jhon Die"
+ *         alamatBaru: "Jl. Example Street No. 123"
+ *         provinsi: "Jawa Barat"
+ *         kabupatenKota: "Bekasi Utara"
+ *         kecamatan: "South Jakarta"
+ *         kelurahanDesa: "Example Village"
+ *         klasifikasiPindah: "Antar Kota Dalam Provinsi"
+ *         NIKPindah: "5983475245"
+ *         alasanPindah: "Pekerjaan"
+ *         kkDaerahAsalImage: "(binary data)"
+ *         DomisiliKeluargaPindahImage: "(binary data)"
  */
+
 
 
 /**
@@ -170,7 +171,7 @@ router.post('/:id', domisiliController.registerDomisili);
  *               status: error
  *               error: Internal Server Error
  */
-router.get('/:nik', DomisiliController.getDomisili);
+router.get('/:nik', domisiliController.getDomisiliData);
 
 /**
  * @swagger
