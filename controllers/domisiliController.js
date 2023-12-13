@@ -78,7 +78,16 @@ async function registerDomisili(req, res) {
     }
 
     const {
-      kk, kepalaKeluarga, alamatBaru, provinsi, kabupatenKota, kecamatan, kelurahanDesa, klasifikasiPindah, NIKPindah, alasanPindah
+      kk,
+      kepalaKeluarga,
+      alamatBaru,
+      provinsi,
+      kabupatenKota,
+      kecamatan,
+      kelurahanDesa,
+      klasifikasiPindah,
+      NIKPindah,
+      alasanPindah
     } = req.body;
 
     const kkDaerahAsalImage = req.files['kkDaerahAsalImage'][0];
@@ -128,7 +137,7 @@ async function registerDomisili(req, res) {
       await submissionStatus.save();
 
       // Update user with submission status
-      await domisili.findByIdAndUpdate(domisili._id, {
+      await Domisili.findByIdAndUpdate(domisili._id, {
         submissionStatus: submissionStatus._id,
       });
 
