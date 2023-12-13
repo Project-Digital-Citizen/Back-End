@@ -27,7 +27,7 @@ const domisiliController = require('../controllers/domisiliController');
  *         - NIKPindah
  *         - alasanPindah
  *         - kkDaerahAsalImage
- *         - ktpKeluargaPindahImage
+ *         - DomisiliKeluargaPindahImage
  *       properties:
  *         kk:
  *           type: String
@@ -63,10 +63,10 @@ const domisiliController = require('../controllers/domisiliController');
  *           type: String
  *           format: binary
  *           description: File containing the KK (Family Card) image
- *         ktpKeluargaPindahImage:
+ *         DomisiliKeluargaPindahImage:
  *           type: String
  *           format: binary
- *           description: File containing the ktp (Identity Card) image
+ *           description: File containing the Domisili (Identity Card) image
  *       example:
  *         kk: 93478563975463
  *         kepalaKeluarga: Jhon Die
@@ -79,7 +79,7 @@ const domisiliController = require('../controllers/domisiliController');
  *         NIKPindah: 5983475245
  *         alasanPindah: Pekerjaan
  *         kkDaerahAsalImage: (binary data)
- *         ktpKeluargaPindahImage: (binary data)
+ *         DomisiliKeluargaPindahImage: (binary data)
  */
 
 
@@ -154,7 +154,7 @@ router.post('/:id', domisiliController.registerDomisili);
  *                 NIKPindah: 5983475245
  *                 alasanPindah: Pekerjaan
  *                 kkDaerahAsalImage: (binary data)
- *                 ktpKeluargaPindahImage: (binary data)
+ *                 DomisiliKeluargaPindahImage: (binary data)
  *       404:
  *         description: Domisili data not found
  *         content:
@@ -170,7 +170,7 @@ router.post('/:id', domisiliController.registerDomisili);
  *               status: error
  *               error: Internal Server Error
  */
-router.get('/:nik', domisiliController.getDomisili);
+router.get('/:nik', DomisiliController.getDomisili);
 
 /**
  * @swagger
