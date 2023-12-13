@@ -172,7 +172,7 @@ async function getDomisiliData(req, res) {
 
     res.status(200).json({
       status: 'success',
-      data: domsiiliData,
+      data: domisiliData,
     });
   } catch (error) {
     console.error(error);
@@ -186,7 +186,7 @@ async function getDomisiliData(req, res) {
 
 async function getAllDomisiliData(req, res) {
   try {
-    const allDomisiliData = await domisiliData.find();
+    const allDomisiliData = await Domisili.find();
 
     if (!allDomisiliData || allDomisiliData.length === 0) {
       return res.status(404).json({
@@ -232,7 +232,7 @@ async function deleteDomisiliByUserId(req, res) {
     }
 
     // Check if the user has the authority to delete this KTP
-    if (ktpUser.submissionStatus.iduser.toString() !== userId) {
+    if (domisili.submissionStatus.iduser.toString() !== userId) {
       return res.status(403).json({
         status: 'error',
         message: 'Unauthorized to delete this Domsili data',
@@ -240,10 +240,10 @@ async function deleteDomisiliByUserId(req, res) {
     }
 
     // Delete the KTP user
-    await KtpUser.findByIdAndRemove(domisili._id);
+    await Domisili.findByIdAndRemove(domisili._id);
 
     // Also, you might want to remove related submission status
-    await SubmissionStatus.findByIdAndRemove(dimisili.submissionStatus._id);
+    await SubmissionStatus.findByIdAndRemove(domisili.submissionStatus._id);
 
     res.status(200).json({
       status: 'success',
