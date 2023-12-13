@@ -52,6 +52,6 @@ const domisiliSchema = new mongoose.Schema({
     },
 });
 
-const KtpUser = mongoose.model('KtpUser', ktpUserSchema);
+const Domisili = mongoose.model('Domisili', domisiliSchema);
 
-module.exports = domisiliSchema;
+module.exports = Domisili;

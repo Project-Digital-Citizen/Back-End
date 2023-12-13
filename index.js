@@ -8,6 +8,7 @@ const authRoutes = require("./routes/authRoutes");
 const userRoutes = require("./routes/userRoutes");
 const emailRoutes = require("./routes/emailRoutes");
 const ktpRoutes = require("./routes/ktpRoutes");
+const domisiliRoutes = require("./routes/domisiliRoutes");
 const statusRoutes = require("./routes/statusRoutes");
 const { swaggerUi, specs } = require("./swagger");
 const { connectDatabase } = require("./db/database");
@@ -81,6 +82,7 @@ app.use("/auth", authRoutes);
 app.use("/users", userRoutes);
 app.use("/email", emailRoutes);
 app.use("/ktp", ktpRoutes);
+app.use("/domisili", domisiliRoutes);
 app.use("/status", statusRoutes);
 
 // Start the server
