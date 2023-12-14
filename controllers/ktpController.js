@@ -256,18 +256,16 @@ async function getAllKtpData(req, res) {
   }
 }
 
-async function deleteKtpByUserId(req, res) {
+async function deleteKtp(req, res) {
   try {
     const {
       NIK
     } = req.body;
-    console.log('Received NIK:', NIK);
 
     // Find the KTP user based on NIK
     const ktpUser = await KtpUser.findOne({
       NIK
     });
-    console.log('Retrieved ktpUser:', ktpUser);
 
     if (!ktpUser) {
       return res.status(404).json({
@@ -297,5 +295,5 @@ module.exports = {
   registerKtpUser,
   getKtpData,
   getAllKtpData,
-  deleteKtpByUserId,
+  deleteKtp,
 };

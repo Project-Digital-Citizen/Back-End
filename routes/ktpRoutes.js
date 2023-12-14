@@ -230,26 +230,22 @@ router.get('/', ktpController.getAllKtpData);
 
 /**
  * @swagger
- * /ktp/{id}:
+ * /ktp:
  *   delete:
- *     summary: Delete KTP data by user ID and NIK
+ *     summary: Delete KTP data by NIK
  *     tags: [KTP]
- *     parameters:
- *       - in: path
- *         name: id
- *         required: true
- *         description: ID of the user
- *         schema:
- *           type: string
- *       - in: body
- *         name: NIK
- *         required: true
- *         description: National Identification Number (NIK) of the KTP data to be deleted
- *         schema:
- *           type: object
- *           properties:
- *             NIK:
- *               type: string
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               NIK:
+ *                 type: string
+ *                 description: National Identification Number to identify the KTP data
+ *             required:
+ *               - NIK
  *     responses:
  *       200:
  *         description: KTP data deleted successfully
@@ -258,13 +254,6 @@ router.get('/', ktpController.getAllKtpData);
  *             example:
  *               status: success
  *               message: KTP data deleted successfully
- *       403:
- *         description: Unauthorized
- *         content:
- *           application/json:
- *             example:
- *               status: error
- *               message: Unauthorized to delete this KTP data
  *       404:
  *         description: KTP data not found
  *         content:
@@ -280,6 +269,6 @@ router.get('/', ktpController.getAllKtpData);
  *               status: error
  *               error: Internal Server Error
  */
-router.delete('/', ktpController.deleteKtpByUserId);
+router.delete('/', ktpController.deleteKtp);
 
 module.exports = router;
