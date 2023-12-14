@@ -1,5 +1,5 @@
 const KtpUser = require("../models/KTP");
-const SubmissionStatus = require('../models/STATUS');
+const SubmissionStatus = require("../models/STATUS");
 const multer = require("multer");
 const path = require("path");
 const fs = require("fs");
@@ -7,12 +7,12 @@ const fs = require("fs");
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
     // Retrieve NIK from request body or use 'unknown' if not present
-    const nik = req.body.NIK || 'unknown';
+    const nik = req.body.NIK || "unknown";
 
     // Create a new folder for each user based on their NIK
     const userFolder = `./public/images/${nik}`;
     fs.mkdirSync(userFolder, {
-      recursive: true
+      recursive: true,
     });
 
     // Set the destination path to the user-specific folder
@@ -20,72 +20,80 @@ const storage = multer.diskStorage({
   },
   filename: function (req, file, cb) {
     const ext = path.extname(file.originalname);
-    const nik = req.body.NIK || 'unknown';
+    const nik = req.body.NIK || "unknown";
     // Determine suratType based on file name
-    let suratType = 'unknown';
-    if (file.fieldname.toLowerCase().includes('kkimage')) {
-      suratType = 'kk';
-    } else if (file.fieldname.toLowerCase().includes('selfieimage')) {
-      suratType = 'selfie';
-    } else if (file.fieldname.toLowerCase().includes('suratrtimage')) {
-      suratType = 'rt';
-    } else if (file.fieldname.toLowerCase().includes('suratrwimage')) {
-      suratType = 'rw';
+    let suratType = "unknown";
+    if (file.fieldname.toLowerCase().includes("kkimage")) {
+      suratType = "kk";
+    } else if (file.fieldname.toLowerCase().includes("selfieimage")) {
+      suratType = "selfie";
+    } else if (file.fieldname.toLowerCase().includes("suratrtimage")) {
+      suratType = "rt";
+    } else if (file.fieldname.toLowerCase().includes("suratrwimage")) {
+      suratType = "rw";
     }
 
     const imageName = `Foto_${suratType}_${nik}${ext}`;
     cb(null, imageName);
-  }
+  },
 });
 
 const upload = multer({
   storage: storage,
+  limits: { fileSize: 10000000 },
   fileFilter: function (req, file, cb) {
-    const allowedTypes = ['.png', '.jpg', '.jpeg'];
+    const allowedTypes = [".png", ".jpg", ".jpeg"];
     const ext = path.extname(file.originalname);
     if (!allowedTypes.includes(ext.toLowerCase())) {
-      return cb(new Error('Invalid Image Type'));
+      return cb(new Error("Invalid Image Type"));
     }
     cb(null, true);
-  }
+  },
 });
 
-const uploadFields = upload.fields([{
-    name: 'kkImage',
-    maxCount: 1
+const uploadFields = upload.fields([
+  {
+    name: "kkImage",
+    maxCount: 1,
   },
   {
-    name: 'selfieImage',
-    maxCount: 1
+    name: "selfieImage",
+    maxCount: 1,
   },
   {
-    name: 'suratRTImage',
-    maxCount: 1
+    name: "suratRTImage",
+    maxCount: 1,
   },
   {
-    name: 'suratRWImage',
-    maxCount: 1
-  }
+    name: "suratRWImage",
+    maxCount: 1,
+  },
 ]);
 
 async function registerKtpUser(req, res) {
   uploadFields(req, res, async function (err) {
     if (err instanceof multer.MulterError) {
       return res.status(422).json({
-        status: 'error',
+        status: "error",
         message: err.message,
       });
     } else if (err) {
       return res.status(500).json({
-        status: 'error',
+        status: "error",
         message: err.message,
       });
     }
 
-    if (!req.files || !req.files['kkImage'] || !req.files['selfieImage'] || !req.files['suratRTImage'] || !req.files['suratRWImage']) {
+    if (
+      !req.files ||
+      !req.files["kkImage"] ||
+      !req.files["selfieImage"] ||
+      !req.files["suratRTImage"] ||
+      !req.files["suratRWImage"]
+    ) {
       return res.status(400).json({
-        status: 'error',
-        message: 'Required images are missing',
+        status: "error",
+        message: "Required images are missing",
       });
     }
 
@@ -105,25 +113,33 @@ async function registerKtpUser(req, res) {
       golonganDarah,
     } = req.body;
 
-    const kkImage = req.files['kkImage'][0];
-    const selfieImage = req.files['selfieImage'][0];
-    const suratRTImage = req.files['suratRTImage'][0];
-    const suratRWImage = req.files['suratRWImage'][0];
+    const kkImage = req.files["kkImage"][0];
+    const selfieImage = req.files["selfieImage"][0];
+    const suratRTImage = req.files["suratRTImage"][0];
+    const suratRWImage = req.files["suratRWImage"][0];
 
-    const kkImageUrl = `${req.protocol}://${req.get('host')}/images/${kkImage.filename}`;
-    const selfieImageUrl = `${req.protocol}://${req.get('host')}/images/${selfieImage.filename}`;
-    const suratRTImageUrl = `${req.protocol}://${req.get('host')}/images/${suratRTImage.filename}`;
-    const suratRWImageUrl = `${req.protocol}://${req.get('host')}/images/${suratRWImage.filename}`;
+    const kkImageUrl = `${req.protocol}://${req.get("host")}/images/${
+      kkImage.filename
+    }`;
+    const selfieImageUrl = `${req.protocol}://${req.get("host")}/images/${
+      selfieImage.filename
+    }`;
+    const suratRTImageUrl = `${req.protocol}://${req.get("host")}/images/${
+      suratRTImage.filename
+    }`;
+    const suratRWImageUrl = `${req.protocol}://${req.get("host")}/images/${
+      suratRWImage.filename
+    }`;
 
     try {
       const existingUser = await KtpUser.findOne({
-        NIK
+        NIK,
       });
 
       if (existingUser) {
         return res.status(400).json({
-          status: 'error',
-          message: 'NIK already exists in the database',
+          status: "error",
+          message: "NIK already exists in the database",
         });
       }
 
@@ -166,56 +182,52 @@ async function registerKtpUser(req, res) {
       });
 
       res.status(201).json({
-        status: 'success',
-        message: 'KTP registered successfully',
+        status: "success",
+        message: "KTP registered successfully",
       });
     } catch (error) {
       res.status(500).json({
-        status: 'error',
+        status: "error",
         error: error.message,
       });
     }
   });
 }
 
-
 async function getKtpData(req, res) {
   try {
-    const {
-      nik
-    } = req.params;
+    const { nik } = req.params;
 
     if (!nik) {
       return res.status(400).json({
-        status: 'error',
-        message: 'NIK parameter is required',
+        status: "error",
+        message: "NIK parameter is required",
       });
     }
 
     const ktpData = await KtpUser.findOne({
-      NIK: nik
+      NIK: nik,
     });
 
     if (!ktpData) {
       return res.status(404).json({
-        status: 'error',
-        message: 'KTP data not found',
+        status: "error",
+        message: "KTP data not found",
       });
     }
 
     res.status(200).json({
-      status: 'success',
+      status: "success",
       data: ktpData,
     });
   } catch (error) {
     console.error(error);
     res.status(500).json({
-      status: 'error',
+      status: "error",
       error: error.message,
     });
   }
 }
-
 
 async function getAllKtpData(req, res) {
   try {
@@ -223,19 +235,19 @@ async function getAllKtpData(req, res) {
 
     if (!allKtpData || allKtpData.length === 0) {
       return res.status(404).json({
-        status: 'error',
-        message: 'No KTP data found',
+        status: "error",
+        message: "No KTP data found",
       });
     }
 
     res.status(200).json({
-      status: 'success',
+      status: "success",
       data: allKtpData,
     });
   } catch (error) {
     console.error(error);
     res.status(500).json({
-      status: 'error',
+      status: "error",
       error: error.message,
     });
   }
@@ -243,32 +255,28 @@ async function getAllKtpData(req, res) {
 
 async function deleteKtpByUserId(req, res) {
   try {
-    const {
-      id: userId
-    } = req.params;
-    const {
-      NIK
-    } = req.body;
+    const { id: userId } = req.params;
+    const { NIK } = req.body;
     console.log(NIK);
     // Assuming you have a proper authentication mechanism to validate the user's authority to delete the KTP
 
     // Find the KTP user based on NIK
     const ktpUser = await KtpUser.findOne({
-      NIK
+      NIK,
     });
 
     if (!ktpUser) {
       return res.status(404).json({
-        status: 'error',
-        message: 'KTP data not found',
+        status: "error",
+        message: "KTP data not found",
       });
     }
 
     // Check if the user has the authority to delete this KTP
     if (ktpUser.submissionStatus.iduser.toString() !== userId) {
       return res.status(403).json({
-        status: 'error',
-        message: 'Unauthorized to delete this KTP data',
+        status: "error",
+        message: "Unauthorized to delete this KTP data",
       });
     }
 
@@ -279,13 +287,13 @@ async function deleteKtpByUserId(req, res) {
     await SubmissionStatus.findByIdAndRemove(ktpUser.submissionStatus._id);
 
     res.status(200).json({
-      status: 'success',
-      message: 'KTP data deleted successfully',
+      status: "success",
+      message: "KTP data deleted successfully",
     });
   } catch (error) {
     console.error(error);
     res.status(500).json({
-      status: 'error',
+      status: "error",
       error: error.message,
     });
   }
@@ -295,5 +303,5 @@ module.exports = {
   registerKtpUser,
   getKtpData,
   getAllKtpData,
-  deleteKtpByUserId
+  deleteKtpByUserId,
 };
