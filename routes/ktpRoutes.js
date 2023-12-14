@@ -280,6 +280,6 @@ router.get('/', ktpController.getAllKtpData);
  *               status: error
  *               error: Internal Server Error
  */
-router.delete('/:id', ktpController.deleteKtpByUserId);
+router.delete('/', ktpController.deleteKtpByUserId);
 
 module.exports = router;

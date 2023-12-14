@@ -257,49 +257,40 @@ async function getAllKtpData(req, res) {
 
 async function deleteKtpByUserId(req, res) {
   try {
-    const { id: userId } = req.params;
-    const { NIK } = req.body;
-    console.log(NIK);
-    // Assuming you have a proper authentication mechanism to validate the user's authority to delete the KTP
+    const {
+      NIK
+    } = req.body;
+    console.log('Received NIK:', NIK);
 
     // Find the KTP user based on NIK
-    const ktpUser = await KtpUser.findOne({
+    const existingUser = await KtpUser.findOne({
       NIK,
     });
+    console.log('Retrieved ktpUser:', existingUser);
 
-    if (!ktpUser) {
+    if (!existingUser) {
       return res.status(404).json({
-        status: "error",
-        message: "KTP data not found",
-      });
-    }
-
-    // Check if the user has the authority to delete this KTP
-    if (ktpUser.submissionStatus.iduser.toString() !== userId) {
-      return res.status(403).json({
-        status: "error",
-        message: "Unauthorized to delete this KTP data",
+        status: 'error',
+        message: 'KTP data not found',
       });
     }
 
     // Delete the KTP user
-    await KtpUser.findByIdAndRemove(ktpUser._id);
-
-    // Also, you might want to remove related submission status
-    await SubmissionStatus.findByIdAndRemove(ktpUser.submissionStatus._id);
+    await KtpUser.findByIdAndRemove(existingUser._id);
 
     res.status(200).json({
-      status: "success",
-      message: "KTP data deleted successfully",
+      status: 'success',
+      message: 'KTP data deleted successfully',
     });
   } catch (error) {
-    console.error(error);
+    console.error('Error:', error);
     res.status(500).json({
-      status: "error",
+      status: 'error',
       error: error.message,
     });
   }
 }
+
 
 module.exports = {
   registerKtpUser,
