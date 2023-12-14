@@ -53,8 +53,7 @@ const upload = multer({
   },
 });
 
-const uploadFields = upload.fields([
-  {
+const uploadFields = upload.fields([{
     name: "kkImage",
     maxCount: 1,
   },
@@ -198,7 +197,9 @@ async function registerKtpUser(req, res) {
 
 async function getKtpData(req, res) {
   try {
-    const { nik } = req.params;
+    const {
+      nik
+    } = req.params;
 
     if (!nik) {
       return res.status(400).json({
@@ -263,12 +264,12 @@ async function deleteKtpByUserId(req, res) {
     console.log('Received NIK:', NIK);
 
     // Find the KTP user based on NIK
-    const existingUser = await KtpUser.findOne({
-      NIK,
+    const ktpUser = await KtpUser.findOne({
+      NIK
     });
-    console.log('Retrieved ktpUser:', existingUser);
+    console.log('Retrieved ktpUser:', ktpUser);
 
-    if (!existingUser) {
+    if (!ktpUser) {
       return res.status(404).json({
         status: 'error',
         message: 'KTP data not found',
@@ -276,7 +277,7 @@ async function deleteKtpByUserId(req, res) {
     }
 
     // Delete the KTP user
-    await KtpUser.findByIdAndRemove(existingUser._id);
+    await KtpUser.findByIdAndRemove(ktpUser._id);
 
     res.status(200).json({
       status: 'success',
