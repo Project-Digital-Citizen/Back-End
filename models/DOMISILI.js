@@ -8,7 +8,6 @@ const domisiliSchema = new mongoose.Schema({
     kepalaKeluarga: {
         type: String,
         required: true,
-        unique: true,
     },
     alamatBaru: {
         type: String,

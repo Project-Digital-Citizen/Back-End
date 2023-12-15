@@ -9,12 +9,10 @@ const submissionStatusSchema = new mongoose.Schema({
     idktp: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'KtpUser',
-        required: true,
     },
     iddomisili: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Domisili',
-        required: true,
     },
     submissionDate: {
         type: Date,

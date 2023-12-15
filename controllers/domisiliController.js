@@ -7,7 +7,7 @@ const fs = require("fs");
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
     // Retrieve NIK from request body or use 'unknown' if not present
-    const nik = req.body.NIK || 'unknown';
+    const nik = req.body.NIKPindah || 'unknown';
 
     // Create a new folder for each user based on their NIK
     const userFolder = `./public/images/${nik}`;
@@ -20,7 +20,7 @@ const storage = multer.diskStorage({
   },
   filename: function (req, file, cb) {
     const ext = path.extname(file.originalname);
-    const nik = req.body.NIK || 'unknown';
+    const nik = req.body.NIKPindah || 'unknown';
     // Determine suratType based on file name
     let suratType = 'unknown';
     if (file.fieldname.toLowerCase().includes('kkdaerahasalimage')) {
@@ -36,6 +36,9 @@ const storage = multer.diskStorage({
 
 const upload = multer({
   storage: storage,
+  limits: {
+    fileSize: 90000000
+  }, // Increased to 90 MB
   fileFilter: function (req, file, cb) {
     const allowedTypes = ['.png', '.jpg', '.jpeg'];
     const ext = path.extname(file.originalname);
@@ -47,13 +50,13 @@ const upload = multer({
 });
 
 const uploadFields = upload.fields([{
-  name: 'kkDaerahAsalImage',
-  maxCount: 1
-},
-{
-  name: 'ktpKeluargaPindahImage',
-  maxCount: 1
-}
+    name: 'kkDaerahAsalImage',
+    maxCount: 1
+  },
+  {
+    name: 'ktpKeluargaPindahImage',
+    maxCount: 1
+  }
 ]);
 
 async function registerDomisili(req, res) {
@@ -98,7 +101,7 @@ async function registerDomisili(req, res) {
 
     try {
       const existingUser = await Domisili.findOne({
-        NIK
+        NIK: NIKPindah
       });
 
       if (existingUser) {
@@ -169,7 +172,7 @@ async function getDomisiliData(req, res) {
     }
 
     const domisiliData = await Domisili.findOne({
-      NIK: nik
+      NIKPindah: nik
     });
 
     if (!domisiliData) {
@@ -217,20 +220,16 @@ async function getAllDomisiliData(req, res) {
   }
 }
 
-async function deleteDomisiliByUserId(req, res) {
+async function deleteDomisili(req, res) {
   try {
-    const {
-      id: userId
-    } = req.params;
+    // Ensure NIK is present in the request body
     const {
       NIK
     } = req.body;
-    console.log(NIK);
-    // Assuming you have a proper authentication mechanism to validate the user's authority to delete the KTP
 
-    // Find the KTP user based on NIK
+    // Find the Domisili user based on NIK
     const domisili = await Domisili.findOne({
-      NIK
+      NIKPindah: NIK,
     });
 
     if (!domisili) {
@@ -240,26 +239,15 @@ async function deleteDomisiliByUserId(req, res) {
       });
     }
 
-    // Check if the user has the authority to delete this KTP
-    if (domisili.submissionStatus.iduser.toString() !== userId) {
-      return res.status(403).json({
-        status: 'error',
-        message: 'Unauthorized to delete this Domsili data',
-      });
-    }
-
-    // Delete the KTP user
+    // Delete the Domisili user
     await Domisili.findByIdAndRemove(domisili._id);
-
-    // Also, you might want to remove related submission status
-    await SubmissionStatus.findByIdAndRemove(domisili.submissionStatus._id);
 
     res.status(200).json({
       status: 'success',
       message: 'Domisili data deleted successfully',
     });
   } catch (error) {
-    console.error(error);
+    console.error('Error:', error);
     res.status(500).json({
       status: 'error',
       error: error.message,
@@ -267,9 +255,12 @@ async function deleteDomisiliByUserId(req, res) {
   }
 }
 
+
+
+
 module.exports = {
   registerDomisili,
   getDomisiliData,
   getAllDomisiliData,
-  deleteDomisiliByUserId
+  deleteDomisili
 };

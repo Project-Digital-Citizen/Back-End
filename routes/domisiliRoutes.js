@@ -27,62 +27,60 @@ const domisiliController = require('../controllers/domisiliController');
  *         - NIKPindah
  *         - alasanPindah
  *         - kkDaerahAsalImage
- *         - DomisiliKeluargaPindahImage
+ *         - ktpKeluargaPindahImage
  *       properties:
  *         kk:
  *           type: string
- *           description: No. KK of the user
+ *           description: Family Card number
  *         kepalaKeluarga:
  *           type: string
- *           description: Head of Family of the user
+ *           description: Head of the family name
  *         alamatBaru:
  *           type: string
- *           description: New Address of the user
+ *           description: New address of the family
  *         provinsi:
  *           type: string
- *           description: Province of the user
+ *           description: Province of the new address
  *         kabupatenKota:
  *           type: string
- *           description: Regency of the user
+ *           description: Regency or city of the new address
  *         kecamatan:
  *           type: string
- *           description: Subdistrict of the user
+ *           description: District of the new address
  *         kelurahanDesa:
  *           type: string
- *           description: Ward of the user
+ *           description: Village of the new address
  *         klasifikasiPindah:
  *           type: string
- *           description: Classification of the user
+ *           description: Classification of the relocation
  *         NIKPindah:
  *           type: string
- *           description: NIK Moved of the user
+ *           description: National Identification Number of the individual relocating
  *         alasanPindah:
  *           type: string
- *           description: The Reason Moved of the user
+ *           description: Reason for relocation
  *         kkDaerahAsalImage:
  *           type: string
  *           format: binary
- *           description: File containing the KK (Family Card) image
- *         DomisiliKeluargaPindahImage:
+ *           description: File containing the Family Card image from the original area
+ *         ktpKeluargaPindahImage:
  *           type: string
  *           format: binary
- *           description: File containing the Domisili (Identity Card) image
+ *           description: File containing the Family Member's ID Card image for relocation
  *       example:
- *         kk: "93478563975463"
- *         kepalaKeluarga: "Jhon Die"
- *         alamatBaru: "Jl. Example Street No. 123"
- *         provinsi: "Jawa Barat"
- *         kabupatenKota: "Bekasi Utara"
- *         kecamatan: "South Jakarta"
- *         kelurahanDesa: "Example Village"
- *         klasifikasiPindah: "Antar Kota Dalam Provinsi"
- *         NIKPindah: "5983475245"
- *         alasanPindah: "Pekerjaan"
- *         kkDaerahAsalImage: "(binary data)"
- *         DomisiliKeluargaPindahImage: "(binary data)"
+ *         kk: '1234567890'
+ *         kepalaKeluarga: 'John Doe'
+ *         alamatBaru: 'Jl. New Street No. 456'
+ *         provinsi: 'DKI Jakarta'
+ *         kabupatenKota: 'Jakarta Selatan'
+ *         kecamatan: 'Kebayoran Baru'
+ *         kelurahanDesa: 'Gandaria Utara'
+ *         klasifikasiPindah: 'Pindah Domisili'
+ *         NIKPindah: '1234567890123456'
+ *         alasanPindah: 'Work relocation'
+ *         kkDaerahAsalImage: (binary data)
+ *         ktpKeluargaPindahImage: (binary data)
  */
-
-
 
 /**
  * @swagger
@@ -111,6 +109,20 @@ const domisiliController = require('../controllers/domisiliController');
  *             example:
  *               status: success
  *               message: Domisili registered successfully
+ *       400:
+ *         description: Required images are missing or invalid request
+ *         content:
+ *           application/json:
+ *             example:
+ *               status: error
+ *               message: Required images are missing
+ *       404:
+ *         description: User not found or NIK already exists in the database
+ *         content:
+ *           application/json:
+ *             example:
+ *               status: error
+ *               message: User not found or NIK already exists in the database
  *       500:
  *         description: Internal Server Error
  *         content:
@@ -119,7 +131,6 @@ const domisiliController = require('../controllers/domisiliController');
  *               status: error
  *               error: Internal Server Error
  */
-
 router.post('/:id', domisiliController.registerDomisili);
 
 
@@ -199,26 +210,20 @@ router.get('/', domisiliController.getAllDomisiliData);
 
 /**
  * @swagger
- * /Domisili/{id}:
+ * /Domisili:
  *   delete:
- *     summary: Delete Domisili data by user ID and NIK
+ *     summary: Delete Domisili data by NIK
  *     tags: [Domisili]
- *     parameters:
- *       - in: path
- *         name: id
- *         required: true
- *         description: ID of the user
- *         schema:
- *           type: string
- *       - in: body
- *         name: NIK
- *         required: true
- *         description: National Identification Number (NIK) of the Domisili data to be deleted
- *         schema:
- *           type: object
- *           properties:
- *             NIK:
- *               type: string
+ *     requestBody:
+ *       description: JSON object containing the National Identification Number (NIK) of the Domisili data to be deleted
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               NIK:
+ *                 type: string
  *     responses:
  *       200:
  *         description: Domisili data deleted successfully
@@ -249,6 +254,6 @@ router.get('/', domisiliController.getAllDomisiliData);
  *               status: error
  *               error: Internal Server Error
  */
-router.delete('/:id', domisiliController.deleteDomisiliByUserId);
+router.delete('/', domisiliController.deleteDomisili);
 
 module.exports = router;
