@@ -1,12 +1,7 @@
 // routes/userRoutes.js
 const express = require('express');
 const router = express.Router();
-const {
-    getUser,
-    getUsers,
-    updateUser,
-    deleteUser,
-} = require('../controllers/userController');
+const userController = require('../controllers/userController');
 
 /**
  * @swagger
@@ -50,7 +45,7 @@ const {
  *               status: error
  *               error: Internal Server Error
  */
-router.get('/:id', getUser);
+router.get('/:id', userController.getUser);
 
 /**
  * @swagger
@@ -73,7 +68,7 @@ router.get('/:id', getUser);
  *               status: error
  *               error: Internal Server Error
  */
-router.get('/', getUsers);
+router.get('/', userController.getUsers);
 
 /**
  * @swagger
@@ -141,7 +136,7 @@ router.get('/', getUsers);
  *               status: error
  *               error: Internal Server Error
  */
-router.put('/:id', updateUser);
+router.put('/:id', userController.updateUser);
 
 /**
  * @swagger
@@ -180,6 +175,61 @@ router.put('/:id', updateUser);
  *               status: error
  *               error: Internal Server Error
  */
-router.delete('/:id', deleteUser);
+router.delete('/:id', userController.deleteUser);
 
+
+/**
+ * @swagger
+ * /change-password:
+ *   post:
+ *     summary: Change user password using OTP
+ *     tags: [USER]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               email:
+ *                 type: string
+ *               otp:
+ *                 type: string
+ *               newPassword:
+ *                 type: string
+ *             example:
+ *               email: user@example.com
+ *               otp: 1234
+ *               newPassword: newSecurePassword
+ *     responses:
+ *       200:
+ *         description: Password changed successfully
+ *         content:
+ *           application/json:
+ *             example:
+ *               status: success
+ *               message: Password changed successfully
+ *       400:
+ *         description: Invalid OTP or missing information
+ *         content:
+ *           application/json:
+ *             example:
+ *               status: error
+ *               message: Invalid OTP or missing information
+ *       404:
+ *         description: User not found
+ *         content:
+ *           application/json:
+ *             example:
+ *               status: error
+ *               message: User not found
+ *       500:
+ *         description: Internal Server Error
+ *         content:
+ *           application/json:
+ *             example:
+ *               status: error
+ *               error: Internal Server Error
+ */
+router.post('/change-password', userController.changePassword);
 module.exports = router;

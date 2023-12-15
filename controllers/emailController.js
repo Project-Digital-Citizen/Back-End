@@ -1,5 +1,6 @@
 const nodemailer = require('nodemailer');
 const OTP = require('../models/OTP');
+const { bodyOtpChangePassword } = require('../utils/emailbody');
 
 const transporter = nodemailer.createTransport({
     service: 'gmail',
@@ -129,7 +130,57 @@ async function resendOTP(req, res) {
     }
 }
 
+
+
+async function sendOTPChangePassword({
+    email
+}) {
+    try {
+        // Check if there is an existing OTP for the email
+        const existingOTP = await OTP.findOne({
+            email
+        });
+
+        if (existingOTP && existingOTP.createdAt > new Date()) {
+            // Existing OTP is still valid, return it
+            return existingOTP.otp;
+        } else {
+            // Generate a new OTP
+            const otp = generateOTP(4);
+
+            // Save the new OTP in the database or update the existing record
+            await OTP.findOneAndUpdate({
+                    email
+                }, {
+                    otp,
+                    createdAt: new Date(Date.now() + 300000)
+                }, // Set expiration time for 5 minutes
+                {
+                    upsert: true,
+                    new: true
+                }
+            );
+
+            // Send email
+            const mailOptions = {
+                from: 'Digital Citizen <' + process.env.EMAIL_USERNAME + '>',
+                to: email,
+                subject: 'Your OTP for Password Change',
+                html: bodyOtpChangePassword(otp)
+            };
+
+            await transporter.sendMail(mailOptions);
+
+            return otp;
+        }
+    } catch (error) {
+        console.error('Error sending OTP email:', error.message);
+        throw error;
+    }
+}
+
 module.exports = {
     sendOTP,
-    resendOTP
+    resendOTP,
+    sendOTPChangePassword
 };

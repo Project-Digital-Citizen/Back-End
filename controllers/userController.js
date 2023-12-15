@@ -118,9 +118,70 @@ async function deleteUser(req, res) {
     }
 }
 
+
+async function changePassword(req, res) {
+    try {
+        const {
+            email,
+            otp,
+            newPassword
+        } = req.body;
+
+        // Validate OTP
+        const existingOTP = await OTP.findOne({
+            email
+        });
+
+        if (!existingOTP || existingOTP.otp !== otp || existingOTP.createdAt <= new Date()) {
+            return res.status(403).json({
+                status: 'error',
+                message: 'Invalid or expired OTP',
+            });
+        }
+
+        // Verify user by email
+        const user = await User.findOne({
+            email
+        });
+
+        if (!user) {
+            return res.status(404).json({
+                status: 'error',
+                message: 'User not found',
+            });
+        }
+
+        // Hash the new password
+        const hashedPassword = await bcrypt.hash(newPassword, 10);
+
+        // Update user's password
+        await User.findByIdAndUpdate(user._id, {
+            password: hashedPassword
+        });
+
+        // Delete the used OTP
+        await OTP.findOneAndRemove({
+            email
+        });
+
+        res.status(200).json({
+            status: 'success',
+            message: 'Password changed successfully',
+        });
+    } catch (error) {
+        console.error('Error changing password:', error);
+        res.status(500).json({
+            status: 'error',
+            error: error.message,
+        });
+    }
+}
+
+
 module.exports = {
     getUser,
     getUsers,
     updateUser,
     deleteUser,
+    changePassword
 };
