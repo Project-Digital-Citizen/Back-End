@@ -14,13 +14,13 @@ const submissionStatusController = require('../controllers/statusController');
  * @swagger
  * /status/{id}:
  *   get:
- *     summary: Get submission status by ID
+ *     summary: Get submission status by user ID
  *     tags: [SubmissionStatus]
  *     parameters:
  *       - in: path
  *         name: id
  *         required: true
- *         description: ID of the submission status
+ *         description: ID of the user to retrieve submission status
  *         schema:
  *           type: string
  *     responses:
@@ -32,6 +32,8 @@ const submissionStatusController = require('../controllers/statusController');
  *               status: success
  *               data:
  *                 _id: 1234567890abcdef12345678
+ *                 iduser: 657218aacd2e562b0c93f2cc,
+ *                 idktp: 6577580146f085c69c02b3e8,
  *                 submissionDate: '2023-01-15T00:00:00.000Z'
  *                 rejectionDate: '2023-01-20T00:00:00.000Z'
  *                 acceptanceDate: null
@@ -52,7 +54,6 @@ const submissionStatusController = require('../controllers/statusController');
  *               status: error
  *               error: Internal Server Error
  */
-
 router.get('/:id', submissionStatusController.getSubmissionStatus);
 
 /**

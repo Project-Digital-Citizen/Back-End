@@ -14,7 +14,10 @@ async function getSubmissionStatus(req, res) {
             });
         }
 
-        const submissionStatus = await SubmissionStatus.findById(id);
+        // Assuming id represents the iduser
+        const submissionStatus = await SubmissionStatus.find({
+            iduser: id
+        });
 
         if (!submissionStatus) {
             return res.status(404).json({

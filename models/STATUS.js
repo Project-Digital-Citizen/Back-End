@@ -11,6 +11,11 @@ const submissionStatusSchema = new mongoose.Schema({
         ref: 'KtpUser',
         required: true,
     },
+    iddomisili: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Domisili',
+        required: true,
+    },
     submissionDate: {
         type: Date,
         required: true,
