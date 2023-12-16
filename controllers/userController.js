@@ -118,26 +118,20 @@ async function updateUser(req, res) {
             });
         }
 
-        if (
-            !req.files ||
-            !req.files["userImage"]
-        ) {
-            return res.status(400).json({
-                status: "error",
-                message: "Required images are missing",
-            });
-        }
-
+        const userId = req.params.id;
+        const {
+            email,
+            nomor,
+            nama,
+            password,
+            NIK,
+            role
+        } = req.body;
+        const userImage = req.files["userImage"][0];
+        const userImageUrl = `${req.protocol}://${req.get("host")}/imageuser/${
+                userImage.filename
+                }`;
         try {
-            const userId = req.params.id;
-            const {
-                email,
-                nomor,
-                nama,
-                password,
-                NIK,
-                role
-            } = req.body;
 
             // Find the user by ID
             const user = await User.findById(userId);
@@ -149,15 +143,9 @@ async function updateUser(req, res) {
                 });
             }
 
-            if (req.files && req.files["userImage"]) {
 
-                const userImage = req.files["userImage"][0];
-                const userImageUrl = `${req.protocol}://${req.get("host")}/imageuser/${
-                userImage.filename
-                }`;
-                user.userImage = userImageUrl || '';
-            }
 
+            user.userImage = userImageUrl || '';
             // Update user information
             user.email = email || user.email;
             user.nomor = nomor || user.nomor;
