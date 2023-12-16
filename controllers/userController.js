@@ -6,29 +6,40 @@ const path = require("path");
 const fs = require("fs");
 
 const storage = multer.diskStorage({
-    destination: function (req, file, cb) {
-        // Retrieve NIK from request body or use 'unknown' if not present
-        const nik = req.body.NIK || "unknown";
+    destination: async function (req, file, cb) {
+        try {
+            const userId = req.params.id;
+            const user = await User.findById(userId);
+            const nik = user.NIK || "unknown";
+            // Create a new folder for each user based on their NIK
+            const userFolder = `./public/users/${nik}`;
+            fs.mkdirSync(userFolder, {
+                recursive: true,
+            });
 
-        // Create a new folder for each user based on their NIK
-        const userFolder = `./public/images/${nik}`;
-        fs.mkdirSync(userFolder, {
-            recursive: true,
-        });
-
-        // Set the destination path to the user-specific folder
-        cb(null, userFolder);
+            // Set the destination path to the user-specific folder
+            cb(null, userFolder);
+        } catch (error) {
+            cb(error, null);
+        }
     },
-    filename: function (req, file, cb) {
-        const ext = path.extname(file.originalname);
-        const nik = req.body.NIK || "unknown";
-        const username = req.body.nama || "unknown";
-        // Determine suratType based on file name
+    filename: async function (req, file, cb) {
+        try {
+            const ext = path.extname(file.originalname);
+            const userId = req.params.id;
+            const user = await User.findById(userId);
+            const nik = user.NIK || "unknown";
+            const username = user.nama || "unknown";
 
-        const imageName = `Foto_${username}_${nik}${ext}`;
-        cb(null, imageName);
+            // Determine suratType based on file name
+            const imageName = `Foto_${username}_${nik}${ext}`;
+            cb(null, imageName);
+        } catch (error) {
+            cb(error, null);
+        }
     },
 });
+
 
 
 const upload = multer({
@@ -141,7 +152,7 @@ async function updateUser(req, res) {
             if (req.files && req.files["userImage"]) {
 
                 const userImage = req.files["userImage"][0];
-                const userImageUrl = `${req.protocol}://${req.get("host")}/images/${
+                const userImageUrl = `${req.protocol}://${req.get("host")}/users/${
                 userImage.filename
                 }`;
                 user.userImage = userImageUrl || '';
