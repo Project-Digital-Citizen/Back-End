@@ -12,7 +12,7 @@ const storage = multer.diskStorage({
             const user = await User.findById(userId);
             const nik = user.NIK || "unknown";
             // Create a new folder for each user based on their NIK
-            const userFolder = `./public/users/${nik}`;
+            const userFolder = `./public/imageuser/${nik}`;
             fs.mkdirSync(userFolder, {
                 recursive: true,
             });
@@ -152,7 +152,7 @@ async function updateUser(req, res) {
             if (req.files && req.files["userImage"]) {
 
                 const userImage = req.files["userImage"][0];
-                const userImageUrl = `${req.protocol}://${req.get("host")}/users/${
+                const userImageUrl = `${req.protocol}://${req.get("host")}/imageuser/${
                 userImage.filename
                 }`;
                 user.userImage = userImageUrl || '';

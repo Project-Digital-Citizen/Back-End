@@ -22,7 +22,7 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
 // Connect to MongoDB
 connectDatabase();
-app.get("/users/:filename", (req, res) => {
+app.get("/imageuser/:filename", (req, res) => {
   const filename = req.params.filename;
   const imagePath = getUserImagePath(filename);
 
@@ -35,7 +35,7 @@ app.get("/users/:filename", (req, res) => {
 });
 
 function getUserImagePath(filename) {
-  const imagesPath = path.join(__dirname, "public", "users");
+  const imagesPath = path.join(__dirname, "public", "imageuser");
 
   // Recursively scan directories and subdirectories
   function scanDirectories(directory) {
