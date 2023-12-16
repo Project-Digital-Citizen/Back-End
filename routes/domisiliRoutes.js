@@ -136,7 +136,7 @@ router.post('/:id', domisiliController.registerDomisili);
 
 /**
  * @swagger
- * /Domisili/{nik}:
+ * /domisili/{nik}:
  *   get:
  *     summary: Get Domisili data by NIK
  *     tags: [Domisili]
@@ -186,7 +186,7 @@ router.get('/:nik', domisiliController.getDomisiliData);
 
 /**
  * @swagger
- * /Domisili:
+ * /domisili:
  *   get:
  *     summary: Get all Domisili data
  *     tags: [Domisili]
@@ -210,7 +210,7 @@ router.get('/', domisiliController.getAllDomisiliData);
 
 /**
  * @swagger
- * /Domisili:
+ * /domisili:
  *   delete:
  *     summary: Delete Domisili data by NIK
  *     tags: [Domisili]

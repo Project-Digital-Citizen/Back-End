@@ -74,53 +74,85 @@ router.get('/', userController.getUsers);
  * @swagger
  * /users/{id}:
  *   put:
+ *     summary: Update user information and image
  *     tags: [USER]
- *     summary: Update user by ID
  *     parameters:
  *       - in: path
  *         name: id
  *         required: true
- *         description: ID of the user
+ *         description: ID of the user to be updated
  *         schema:
  *           type: string
+ *       - in: formData
+ *         name: email
+ *         required: false
+ *         description: New email for the user
+ *         schema:
+ *           type: string
+ *       - in: formData
+ *         name: nomor
+ *         required: false
+ *         description: New phone number for the user
+ *         schema:
+ *           type: string
+ *       - in: formData
+ *         name: nama
+ *         required: false
+ *         description: New name for the user
+ *         schema:
+ *           type: string
+ *       - in: formData
+ *         name: password
+ *         required: false
+ *         description: New password for the user
+ *         schema:
+ *           type: string
+ *       - in: formData
+ *         name: NIK
+ *         required: false
+ *         description: New National Identification Number (NIK) for the user
+ *         schema:
+ *           type: string
+ *       - in: formData
+ *         name: role
+ *         required: false
+ *         description: New role for the user (user or admin)
+ *         schema:
+ *           type: string
+ *           enum: [user, admin]
  *     requestBody:
+ *       required: true
  *       content:
- *         application/json:
+ *         multipart/form-data:
  *           schema:
  *             type: object
  *             properties:
- *               email:
+ *               userImage:
  *                 type: string
- *               nomor:
- *                 type: string
- *               nama:
- *                 type: string
- *               password:
- *                 type: string
- *               NIK:
- *                 type: string
- *             required:
- *               - email
- *               - nomor
- *               - nama
- *               - password
- *               - NIK
+ *                 format: binary
  *     responses:
  *       200:
- *         description: Successful operation
+ *         description: User updated successfully
  *         content:
  *           application/json:
  *             example:
  *               status: success
  *               message: User updated successfully
- *               user: { "id": "1", "name": "Updated Name", "email": "updated@example.com" }
+ *               user:
+ *                 _id: 1234567890abcdef12345678
+ *                 email: user@example.com
+ *                 nomor: +1234567890
+ *                 nama: John Doe
+ *                 NIK: 1234567890123456
+ *                 role: user
+ *                 userImage: http://localhost:3000/images/user-image.jpg
  *       400:
- *         description: Invalid input
+ *         description: Required images are missing
  *         content:
  *           application/json:
  *             example:
  *               status: error
- *               message: Invalid input
+ *               message: Required images are missing
  *       404:
  *         description: User not found
  *         content:
@@ -128,6 +160,13 @@ router.get('/', userController.getUsers);
  *             example:
  *               status: error
  *               message: User not found
+ *       422:
+ *         description: Unprocessable Entity
+ *         content:
+ *           application/json:
+ *             example:
+ *               status: error
+ *               message: Unprocessable Entity
  *       500:
  *         description: Internal Server Error
  *         content:
@@ -137,6 +176,7 @@ router.get('/', userController.getUsers);
  *               error: Internal Server Error
  */
 router.put('/:id', userController.updateUser);
+
 
 /**
  * @swagger
