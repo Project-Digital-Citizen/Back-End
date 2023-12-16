@@ -1,6 +1,9 @@
 const nodemailer = require('nodemailer');
 const OTP = require('../models/OTP');
-const { bodyOtpChangePassword } = require('../utils/emailbody');
+const {
+    bodyOtpChangePassword,
+    bodyOtp
+} = require('../utils/emailbody');
 
 const transporter = nodemailer.createTransport({
     service: 'gmail',
@@ -56,7 +59,7 @@ async function sendOTP({
                 from: 'Digital Citizen <' + process.env.EMAIL_USERNAME + '>',
                 to: email,
                 subject: 'Your OTP for Verification',
-                text: `Your OTP (One Time Password) is: ${otp}. This OTP is valid for 5 minutes. Do not share it with anyone.`
+                html: bodyOtp(otp)
             };
 
             await transporter.sendMail(mailOptions);
@@ -109,7 +112,7 @@ async function resendOTP(req, res) {
                 from: 'Digital Citizen <' + process.env.EMAIL_USERNAME + '>',
                 to: email,
                 subject: 'Your OTP for Verification',
-                text: `Your OTP (One Time Password) is: ${newOTP}. This OTP is valid for 5 minutes. Do not share it with anyone.`
+                html: bodyOtp(newOTP)
             };
 
             await transporter.sendMail(mailOptions);
