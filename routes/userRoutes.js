@@ -83,50 +83,31 @@ router.get('/', userController.getUsers);
  *         description: ID of the user to be updated
  *         schema:
  *           type: string
- *       - in: formData
- *         name: email
- *         required: false
- *         description: New email for the user
- *         schema:
- *           type: string
- *       - in: formData
- *         name: nomor
- *         required: false
- *         description: New phone number for the user
- *         schema:
- *           type: string
- *       - in: formData
- *         name: nama
- *         required: false
- *         description: New name for the user
- *         schema:
- *           type: string
- *       - in: formData
- *         name: password
- *         required: false
- *         description: New password for the user
- *         schema:
- *           type: string
- *       - in: formData
- *         name: NIK
- *         required: false
- *         description: New National Identification Number (NIK) for the user
- *         schema:
- *           type: string
- *       - in: formData
- *         name: role
- *         required: false
- *         description: New role for the user (user or admin)
- *         schema:
- *           type: string
- *           enum: [user, admin]
  *     requestBody:
- *       required: true
  *       content:
  *         multipart/form-data:
  *           schema:
  *             type: object
  *             properties:
+ *               email:
+ *                 type: string
+ *                 description: New email for the user
+ *               nomor:
+ *                 type: string
+ *                 description: New phone number for the user
+ *               nama:
+ *                 type: string
+ *                 description: New name for the user
+ *               password:
+ *                 type: string
+ *                 description: New password for the user
+ *               NIK:
+ *                 type: string
+ *                 description: New National Identification Number (NIK) for the user
+ *               role:
+ *                 type: string
+ *                 description: New role for the user (user or admin)
+ *                 enum: [user, admin]
  *               userImage:
  *                 type: string
  *                 format: binary
@@ -175,8 +156,8 @@ router.get('/', userController.getUsers);
  *               status: error
  *               error: Internal Server Error
  */
-router.put('/:id', userController.updateUser);
 
+router.put('/:id', userController.updateUser);
 
 /**
  * @swagger
