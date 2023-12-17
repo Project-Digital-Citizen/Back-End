@@ -1,6 +1,6 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
-const domisiliController = require('../controllers/domisiliController');
+const domisiliController = require("../controllers/domisiliController");
 
 /**
  * @swagger
@@ -131,8 +131,7 @@ const domisiliController = require('../controllers/domisiliController');
  *               status: error
  *               error: Internal Server Error
  */
-router.post('/:id', domisiliController.registerDomisili);
-
+router.post("/:id", domisiliController.registerDomisili);
 
 /**
  * @swagger
@@ -182,7 +181,7 @@ router.post('/:id', domisiliController.registerDomisili);
  *               status: error
  *               error: Internal Server Error
  */
-router.get('/:nik', domisiliController.getDomisiliData);
+router.get("/:nik", domisiliController.getDomisiliData);
 
 /**
  * @swagger
@@ -206,7 +205,75 @@ router.get('/:nik', domisiliController.getDomisiliData);
  *               status: error
  *               error: Internal Server Error
  */
-router.get('/', domisiliController.getAllDomisiliData);
+router.get("/", domisiliController.getAllDomisiliData);
+
+/**
+ * @swagger
+ * /domisili/{id}:
+ *   put:
+ *     summary: Verify Domisili
+ *     tags:
+ *       - Domisili
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         description: ID of the Domisili to verify
+ *         required: true
+ *         type: string
+ *       - in: body
+ *         name: body
+ *         description: Verification details
+ *         required: true
+ *         schema:
+ *           type: object
+ *           properties:
+ *             verified:
+ *               type: string
+ *               enum: [accept, reject]
+ *               description: Verification status
+ *               example: accept
+ *             reason:
+ *               type: string
+ *               description: Rejection reason (required if verified is reject)
+ *               example: "Incomplete documentation"
+ *     responses:
+ *       200:
+ *         description: Successful operation
+ *         schema:
+ *           type: object
+ *           properties:
+ *             status:
+ *               type: string
+ *               example: success
+ *             message:
+ *               type: string
+ *               example: Domisili verified successfully
+ *             domisili:
+ *               $ref: "#/definitions/Domisili"
+ *       404:
+ *         description: Domisili not found
+ *         schema:
+ *           type: object
+ *           properties:
+ *             status:
+ *               type: string
+ *               example: error
+ *             message:
+ *               type: string
+ *               example: Domisili not found
+ *       500:
+ *         description: Internal Server Error
+ *         schema:
+ *           type: object
+ *           properties:
+ *             status:
+ *               type: string
+ *               example: error
+ *             error:
+ *               type: string
+ *               example: Internal Server Error
+ */
+router.put("/:id", domisiliController.verifyDomisili);
 
 /**
  * @swagger
@@ -254,6 +321,6 @@ router.get('/', domisiliController.getAllDomisiliData);
  *               status: error
  *               error: Internal Server Error
  */
-router.delete('/', domisiliController.deleteDomisili);
+router.delete("/", domisiliController.deleteDomisili);
 
 module.exports = router;
