@@ -4,6 +4,7 @@ const User = require("../models/User");
 const multer = require("multer");
 const path = require("path");
 const fs = require("fs");
+const OTP = require("../models/OTP");
 
 const storage = multer.diskStorage({
   destination: async function (req, file, cb) {
