@@ -5,7 +5,7 @@
 <br />
 <div align="center">
   <a href="https://github.com/Project-Digital-Citizen/Back-End">
-    <img src="src/assets/images/logo_3.png" alt="Logo" width="140" height="80">
+    <img src="https://telegra.ph/file/d84494876312de4cdc90e.jpg" alt="Logo" width="140" height="80">
   </a>
 
 <h3 align="center">Digital Citizen</h3>
@@ -50,12 +50,6 @@
 <!-- ABOUT THE PROJECT -->
 
 ## About Digital Citizen
-
-<img src="src/assets/images/img-readme/dashboard.png" alt="Logo" width="100%" height="100%">
-<img src="src/assets/images/img-readme/profile.png" alt="Logo" width="100%" height="100%">
-<img src="src/assets/images/img-readme/pengajuan_ktp.png" alt="Logo" width="100%" height="100%">
-<img src="src/assets/images/img-readme/pengajuan_domisili.png" alt="Logo" width="100%" height="100%">
-<img src="src/assets/images/img-readme/status_pengajuan.png" alt="Logo" width="100%" height="100%">
 
 Website "Digital Citizen" dirancang untuk meningkatkan efisiensi dan aksesibilitas dalam proses pengajuan surat menyurat pada lembaga kemasyarakatan desa/kelurahan. Melalui pengembangan website, tim proyek berupaya memberikan solusi praktis untuk mengatasi kendala dalam pengajuan surat yang seringkali lambat dan tidak efektif akibat proses manual.
 
