@@ -212,6 +212,7 @@ router.get("/", domisiliController.getAllDomisiliData);
  * /domisili/{id}:
  *   put:
  *     summary: Verify Domisili
+ *     description: Verify the Domisili status by ID
  *     tags:
  *       - Domisili
  *     parameters:
@@ -220,60 +221,52 @@ router.get("/", domisiliController.getAllDomisiliData);
  *         description: ID of the Domisili to verify
  *         required: true
  *         type: string
- *       - in: body
- *         name: body
- *         description: Verification details
- *         required: true
- *         schema:
- *           type: object
- *           properties:
- *             verified:
- *               type: string
- *               enum: [accept, reject]
- *               description: Verification status
- *               example: accept
- *             reason:
- *               type: string
- *               description: Rejection reason (required if verified is reject)
- *               example: "Incomplete documentation"
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               verified:
+ *                 type: string
+ *                 description: Verification status ("accept" or "reject")
+ *                 example: "accept"
+ *               reason:
+ *                 type: string
+ *                 description: Rejection reason (if rejected)
+ *                 example: "Incomplete information"
  *     responses:
  *       200:
  *         description: Successful operation
- *         schema:
- *           type: object
- *           properties:
- *             status:
- *               type: string
- *               example: success
- *             message:
- *               type: string
- *               example: Domisili verified successfully
- *             domisili:
- *               $ref: "#/definitions/Domisili"
+ *         content:
+ *           application/json:
+ *             example:
+ *               status: success
+ *               message: Domisili verified successfully
+ *               domisili:
+ *                 _id: "60a0b78c4c3b1344dc9308a3"
+ *                 verified: "accept"
+ *                 rejectionReason: "Incomplete information"
+ *                 acceptanceDate: "2021-05-15T10:30:45.678Z"
+ *                 rejectionDate: "2021-05-15T11:45:12.345Z"
  *       404:
  *         description: Domisili not found
- *         schema:
- *           type: object
- *           properties:
- *             status:
- *               type: string
- *               example: error
- *             message:
- *               type: string
- *               example: Domisili not found
+ *         content:
+ *           application/json:
+ *             example:
+ *               status: error
+ *               message: Domisili not found
  *       500:
  *         description: Internal Server Error
- *         schema:
- *           type: object
- *           properties:
- *             status:
- *               type: string
- *               example: error
- *             error:
- *               type: string
- *               example: Internal Server Error
+ *         content:
+ *           application/json:
+ *             example:
+ *               status: error
+ *               error: Internal Server Error
  */
 router.put("/:id", domisiliController.verifyDomisili);
+
 
 /**
  * @swagger

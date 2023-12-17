@@ -236,41 +236,49 @@ async function verifyDomisili(req, res) {
   try {
     const domisiliId = req.params.id;
     const { verified, reason } = req.body;
-    const domisili = await Domisili.findById(domisiliId);
+     const domisili = await Domisili.findById(domisiliId);
+     // Use update method to update the 'verified' field
+     const result = await Domisili.updateOne({
+       _id: domisiliId
+     }, {
+       $set: {
+         verified: verified || domisili.verified
+       }
+     });
 
-    if (!domisili) {
-      return res.status(404).json({
-        status: "error",
-        message: "Domisili not found",
-      });
-    }
+     if (result.nModified === 0) {
+       return res.status(404).json({
+         status: "error",
+         message: "Domisili not found",
+       });
+     }
 
-    domisili.verified = verified || domisili.verified;
+     // Fetch the updated Domisili document
+     const updatedomisili = await Domisili.findById(domisiliId);
 
-    await domisili.save();
+     if (verified == "reject") {
+       await SubmissionStatus.findByIdAndUpdate(domisiliId, {
+         rejectionDate: Date.now(),
+         rejectionReason: reason,
+       });
+     } else if (verified == "accept") {
+       await SubmissionStatus.findByIdAndUpdate(domisiliId, {
+         acceptanceDate: Date.now(),
+       });
+     }
 
-    if (verified == "reject") {
-      await SubmissionStatus.findByIdAndUpdate(domisiliId, {
-        rejectionDate: Date.now(),
-        rejectionReason: reason,
-      });
-    } else if (verified == "accept") {
-      await SubmissionStatus.findByIdAndUpdate(domisiliId, {
-        acceptanceDate: Date.now(),
-      });
-    }
-
-    res.status(200).json({
-      status: "success",
-      message: "Domisili verified successfully",
-      domisili,
-    });
-  } catch (error) {
-    res.status(500).json({
-      status: "error",
-      error: error.message,
-    });
-  }
+     res.status(200).json({
+       status: "success",
+       message: "Domisili verified successfully",
+       domisili: updatedomisili,
+     });
+     }
+     catch (error) {
+       res.status(500).json({
+         status: "error",
+         error: error.message,
+       });
+     }
 }
 
 async function deleteDomisili(req, res) {

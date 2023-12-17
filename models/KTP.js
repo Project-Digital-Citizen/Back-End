@@ -72,6 +72,7 @@ const ktpUserSchema = new mongoose.Schema({
   },
   verified: {
     type: String,
+    default: ''
   },
 });
 
