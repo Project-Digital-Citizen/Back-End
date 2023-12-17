@@ -24,6 +24,8 @@ const ktpController = require("../controllers/ktpController");
  *         - status
  *         - pekerjaan
  *         - kewarganegaraan
+ *         - provinsi
+ *         - kabupaten
  *         - rtRw
  *         - kecamatan
  *         - kelurahanDesa
@@ -58,6 +60,12 @@ const ktpController = require("../controllers/ktpController");
  *         kewarganegaraan:
  *           type: string
  *           description: Citizenship of the user
+ *         provinsi: 
+ *           type: string
+ *           description: Province of user
+ *         kabupaten: 
+ *           type: string
+ *           description: Regency of user
  *         rtRw:
  *           type: string
  *           description: RT/RW of the user's address
@@ -98,6 +106,8 @@ const ktpController = require("../controllers/ktpController");
  *         status: Married
  *         pekerjaan: Engineer
  *         kewarganegaraan: Indonesian
+ *         provinsi : South Jakarta
+ *         kabupaten : Jaks
  *         rtRw: 001/002
  *         kecamatan: South Jakarta
  *         kelurahanDesa: Example Village

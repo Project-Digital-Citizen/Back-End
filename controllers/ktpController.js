@@ -4,6 +4,9 @@ const multer = require("multer");
 const path = require("path");
 const fs = require("fs");
 const Statistic = require("../models/Statistic");
+const {
+  makeKTP
+} = require("../utils/ktpmaker");
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
@@ -108,6 +111,8 @@ async function registerKtpUser(req, res) {
       status,
       pekerjaan,
       kewarganegaraan,
+      provinsi,
+      kabupaten,
       rtRw,
       kecamatan,
       kelurahanDesa,
@@ -154,6 +159,8 @@ async function registerKtpUser(req, res) {
         status,
         pekerjaan,
         kewarganegaraan,
+        provinsi,
+        kabupaten,
         rtRw,
         kecamatan,
         kelurahanDesa,
@@ -303,6 +310,7 @@ async function verifyKTP(req, res) {
       }, {
         acceptanceDate: Date.now(),
       });
+      await makeKTP(ktp.NIK, ktp.provinsi, ktp.kabupaten, ktp.nama, ktp.tempatTanggalLahir, ktp.jenisKelamin, ktp.alamat, ktp.rtRw, ktp.kelurahanDesa, ktp.kecamatan, ktp.agama, ktp.status, ktp.pekerjaan, ktp.kewarganegaraan, ktp.selfieImage)
     }
 
 
