@@ -59,13 +59,7 @@ Project Digital Citizen dibangun untuk memenuhi tugas akhir atau Capstone Projec
 
 ### Built With
 
-#### FRONT-END
-
-- [HTML](https://html.com/)
-- [Javascript](https://www.javascript.com/)
-- [Tailwind](https://tailwindcss.com/)
-
-### BACK-END
+#### BACK-END
 
 - [Express](https://expressjs.com/)
 - [MongoDB](https://www.mongodb.com/)
