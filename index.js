@@ -10,6 +10,7 @@ const emailRoutes = require("./routes/emailRoutes");
 const ktpRoutes = require("./routes/ktpRoutes");
 const domisiliRoutes = require("./routes/domisiliRoutes");
 const statusRoutes = require("./routes/statusRoutes");
+const statisticRoutes = require("./routes/statisticRoutes");
 const { swaggerUi, specs } = require("./swagger");
 const { connectDatabase } = require("./db/database");
 
@@ -126,6 +127,7 @@ app.use("/email", emailRoutes);
 app.use("/ktp", ktpRoutes);
 app.use("/domisili", domisiliRoutes);
 app.use("/status", statusRoutes);
+app.use('/statistics', statisticRoutes);
 
 // Start the server
 const PORT = process.env.PORT || 3000;
