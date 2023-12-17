@@ -1,6 +1,6 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
-const ktpController = require('../controllers/ktpController');
+const ktpController = require("../controllers/ktpController");
 
 /**
  * @swagger
@@ -109,7 +109,6 @@ const ktpController = require('../controllers/ktpController');
  *         suratRWImage: (binary data)
  */
 
-
 /**
  * @swagger
  * /ktp/{id}:
@@ -146,8 +145,7 @@ const ktpController = require('../controllers/ktpController');
  *               error: Internal Server Error
  */
 
-router.post('/:id', ktpController.registerKtpUser);
-
+router.post("/:id", ktpController.registerKtpUser);
 
 /**
  * @swagger
@@ -183,10 +181,10 @@ router.post('/:id', ktpController.registerKtpUser);
  *                 kelurahanDesa: Example Village
  *                 jenisKelamin: Male
  *                 golonganDarah: A
- *                 kkImage: http://localhost:3000/images/Foto_kk_528323232323001.png
- *                 selfieImage: http://localhost:3000/images/Foto_selfie_528323232323001.png
- *                 suratRTImage: http://localhost:3000/images/Foto_rt_528323232323001.png
- *                 suratRWImage: http://localhost:3000/images/Foto_rw_528323232323001.png
+ *                 kkImage: http:*localhost:3000/images/Foto_kk_528323232323001.png
+ *                 selfieImage: http:*localhost:3000/images/Foto_selfie_528323232323001.png
+ *                 suratRTImage: http:*localhost:3000/images/Foto_rt_528323232323001.png
+ *                 suratRWImage: http:*localhost:3000/images/Foto_rw_528323232323001.png
  *       404:
  *         description: KTP data not found
  *         content:
@@ -202,7 +200,7 @@ router.post('/:id', ktpController.registerKtpUser);
  *               status: error
  *               error: Internal Server Error
  */
-router.get('/:nik', ktpController.getKtpData);
+router.get("/:nik", ktpController.getKtpData);
 
 /**
  * @swagger
@@ -226,7 +224,71 @@ router.get('/:nik', ktpController.getKtpData);
  *               status: error
  *               error: Internal Server Error
  */
-router.get('/', ktpController.getAllKtpData);
+router.get("/", ktpController.getAllKtpData);
+
+/**
+ * @swagger
+ * /ktp/{id}:
+ * put:
+ *   summary: Verify KTP
+ *   description: Verify the KTP status by ID
+ *   tags:
+ *     - KTP
+ *   parameters:
+ *     - in: path
+ *       name: id
+ *       description: ID of the KTP to verify
+ *       required: true
+ *       type: string
+ *     - in: body
+ *       name: body
+ *       description: Verification details
+ *       required: true
+ *       schema:
+ *         type: object
+ *         properties:
+ *           verified:
+ *             type: boolean
+ *             description: Verification status
+ *             example: true
+ *   responses:
+ *     200:
+ *       description: Successful operation
+ *       schema:
+ *         type: object
+ *         properties:
+ *           status:
+ *             type: string
+ *             example: success
+ *           message:
+ *             type: string
+ *             example: KTP verified successfully
+ *           ktp:
+ *             $ref: "#/definitions/KTP"
+ *     404:
+ *       description: KTP not found
+ *       schema:
+ *         type: object
+ *         properties:
+ *           status:
+ *             type: string
+ *             example: error
+ *           message:
+ *             type: string
+ *             example: KTP not found
+ *     500:
+ *       description: Internal Server Error
+ *       schema:
+ *         type: object
+ *         properties:
+ *           status:
+ *             type: string
+ *             example: error
+ *           error:
+ *             type: string
+ *             example: Internal Server Error
+ */
+router.put("/:id", ktpController.verifyKTP);
 
 /**
  * @swagger
@@ -269,6 +331,6 @@ router.get('/', ktpController.getAllKtpData);
  *               status: error
  *               error: Internal Server Error
  */
-router.delete('/', ktpController.deleteKtp);
+router.delete("/", ktpController.deleteKtp);
 
 module.exports = router;

@@ -42,7 +42,7 @@ const storage = multer.diskStorage({
 const upload = multer({
   storage: storage,
   limits: {
-    fileSize: 90000000
+    fileSize: 90000000,
   }, // Increased to 90 MB
   fileFilter: function (req, file, cb) {
     const allowedTypes = [".png", ".jpg", ".jpeg"];
@@ -54,7 +54,8 @@ const upload = multer({
   },
 });
 
-const uploadFields = upload.fields([{
+const uploadFields = upload.fields([
+  {
     name: "kkImage",
     maxCount: 1,
   },
@@ -202,9 +203,7 @@ async function registerKtpUser(req, res) {
 
 async function getKtpData(req, res) {
   try {
-    const {
-      nik
-    } = req.params;
+    const { nik } = req.params;
 
     if (!nik) {
       return res.status(400).json({
@@ -261,21 +260,49 @@ async function getAllKtpData(req, res) {
   }
 }
 
+async function verifyKTP(req, res) {
+  try {
+    const ktpId = req.params.id;
+    const { verified } = req.body;
+    const ktp = await KtpUser.findById(ktpId);
+
+    if (!ktp) {
+      return res.status(404).json({
+        status: "error",
+        message: "KTP not found",
+      });
+    }
+
+    ktp.verified = verified || ktp.verified;
+
+    await ktp.save();
+
+    res.status(200).json({
+      status: "success",
+      message: "KTP verified successfully",
+      ktp,
+    });
+  } catch (error) {
+    res.status(500).json({
+      status: "error",
+      error: error.message,
+    });
+  }
+}
+
 async function deleteKtp(req, res) {
   try {
-    const {
-      NIK
-    } = req.body;
+    const { NIK } = req.body;
 
     // Find the KTP user based on NIK
     const ktpUser = await KtpUser.findOne({
-      NIK
+      NIK,
     });
 
     if (!ktpUser) {
       return res.status(404).json({
-        status: 'error',
-        message: 'KTP data not found',
+        status: "error",
+        message: "KTP data not found",
       });
     }
 
@@ -283,22 +310,22 @@ async function deleteKtp(req, res) {
     await KtpUser.findByIdAndRemove(ktpUser._id);
 
     res.status(200).json({
-      status: 'success',
-      message: 'KTP data deleted successfully',
+      status: "success",
+      message: "KTP data deleted successfully",
     });
   } catch (error) {
-    console.error('Error:', error);
+    console.error("Error:", error);
     res.status(500).json({
-      status: 'error',
+      status: "error",
       error: error.message,
     });
   }
 }
-
 
 module.exports = {
   registerKtpUser,
   getKtpData,
   getAllKtpData,
   deleteKtp,
+  verifyKTP,
 };
