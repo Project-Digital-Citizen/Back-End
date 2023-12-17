@@ -248,7 +248,7 @@ router.get("/", ktpController.getAllKtpData);
  *           type: object
  *           properties:
  *             verified:
- *               type: boolean
+ *               type: string
  *               description: Verification status
  *               example: true
  *     responses:
