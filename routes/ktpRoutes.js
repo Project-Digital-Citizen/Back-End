@@ -229,64 +229,78 @@ router.get("/", ktpController.getAllKtpData);
 /**
  * @swagger
  * /ktp/{id}:
- * put:
- *   summary: Verify KTP
- *   description: Verify the KTP status by ID
- *   tags:
- *     - KTP
- *   parameters:
- *     - in: path
- *       name: id
- *       description: ID of the KTP to verify
- *       required: true
- *       type: string
- *     - in: body
- *       name: body
- *       description: Verification details
- *       required: true
- *       schema:
- *         type: object
- *         properties:
- *           verified:
- *             type: boolean
- *             description: Verification status
- *             example: true
- *   responses:
- *     200:
- *       description: Successful operation
- *       schema:
- *         type: object
- *         properties:
- *           status:
- *             type: string
- *             example: success
- *           message:
- *             type: string
- *             example: KTP verified successfully
- *           ktp:
- *             $ref: "#/definitions/KTP"
- *     404:
- *       description: KTP not found
- *       schema:
- *         type: object
- *         properties:
- *           status:
- *             type: string
- *             example: error
- *           message:
- *             type: string
- *             example: KTP not found
- *     500:
- *       description: Internal Server Error
- *       schema:
- *         type: object
- *         properties:
- *           status:
- *             type: string
- *             example: error
- *           error:
- *             type: string
- *             example: Internal Server Error
+ *   put:
+ *     summary: Verify KTP
+ *     description: Verify the KTP status by ID
+ *     tags:
+ *       - KTP
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         description: ID of the KTP to verify
+ *         required: true
+ *         type: string
+ *       - in: body
+ *         name: body
+ *         description: Verification details
+ *         required: true
+ *         schema:
+ *           type: object
+ *           properties:
+ *             verified:
+ *               type: boolean
+ *               description: Verification status
+ *               example: true
+ *     responses:
+ *       200:
+ *         description: Successful operation
+ *         content:
+ *           application/json:
+ *             example:
+ *               status: success
+ *               message: KTP verified successfully
+ *               ktp:
+ *                 $ref: "#/definitions/KTP"
+ *       404:
+ *         description: KTP not found
+ *         content:
+ *           application/json:
+ *             example:
+ *               status: error
+ *               message: KTP not found
+ *       500:
+ *         description: Internal Server Error
+ *         content:
+ *           application/json:
+ *             example:
+ *               status: error
+ *               error: Internal Server Error
+ *
+ * definitions:
+ *   KTP:
+ *     type: object
+ *     properties:
+ *       _id:
+ *         type: string
+ *         example: 60a0b78c4c3b1344dc9308a3
+ *       nama:
+ *         type: string
+ *         example: John Doe
+ *       NIK:
+ *         type: string
+ *         example: "1234567890123456"
+ *       // ... (tambahkan properti lainnya sesuai kebutuhan)
+ *       verified:
+ *         type: boolean
+ *         example: true
+ *       createdAt:
+ *         type: string
+ *         format: date-time
+ *         example: "2021-05-15T10:30:45.678Z"
+ *       updatedAt:
+ *         type: string
+ *         format: date-time
+ *         example: "2021-05-15T11:45:12.345Z"
  */
 router.put("/:id", ktpController.verifyKTP);
 
