@@ -289,7 +289,6 @@ router.get("/", ktpController.getAllKtpData);
  *       NIK:
  *         type: string
  *         example: "1234567890123456"
- *       // ... (tambahkan properti lainnya sesuai kebutuhan)
  *       verified:
  *         type: boolean
  *         example: true
