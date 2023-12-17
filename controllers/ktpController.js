@@ -54,8 +54,7 @@ const upload = multer({
   },
 });
 
-const uploadFields = upload.fields([
-  {
+const uploadFields = upload.fields([{
     name: "kkImage",
     maxCount: 1,
   },
@@ -164,7 +163,6 @@ async function registerKtpUser(req, res) {
         selfieImage: selfieImageUrl,
         suratRTImage: suratRTImageUrl,
         suratRWImage: suratRWImageUrl,
-        verified: '',
       });
 
       await ktpUser.save();
@@ -204,7 +202,9 @@ async function registerKtpUser(req, res) {
 
 async function getKtpData(req, res) {
   try {
-    const { nik } = req.params;
+    const {
+      nik
+    } = req.params;
 
     if (!nik) {
       return res.status(400).json({
@@ -268,7 +268,9 @@ async function verifyKTP(req, res) {
       verified,
       reason
     } = req.body;
-   const ktp = await KtpUser.findById(ktpId);
+
+
+    const ktp = await KtpUser.findById(ktpId);
     // Use update method to update the 'verified' field
     const result = await KtpUser.updateOne({
       _id: ktpId
@@ -315,7 +317,9 @@ async function verifyKTP(req, res) {
 
 async function deleteKtp(req, res) {
   try {
-    const { NIK } = req.body;
+    const {
+      NIK
+    } = req.body;
 
     // Find the KTP user based on NIK
     const ktpUser = await KtpUser.findOne({

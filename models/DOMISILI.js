@@ -49,6 +49,10 @@ const domisiliSchema = new mongoose.Schema({
         type: String, // File path
         required: true,
     },
+    verified: {
+        type: String,
+        default: ''
+    },
 });
 
 const Domisili = mongoose.model('Domisili', domisiliSchema);

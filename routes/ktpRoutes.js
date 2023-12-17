@@ -240,23 +240,21 @@ router.get("/", ktpController.getAllKtpData);
  *         description: ID of the KTP to verify
  *         required: true
  *         type: string
- *       - in: body
- *         name: body
- *         description: Verification details
- *         required: true
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 verified:
- *                   type: string
- *                   description: Verification status ("true" or "false")
- *                   example: "true"
- *                 reason:
- *                   type: string
- *                   description: Rejection reason (if rejected)
- *                   example: "Incomplete information"
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               verified:
+ *                 type: string
+ *                 description: Verification status ("accept" or "reject")
+ *                 example: "accept"
+ *               reason:
+ *                 type: string
+ *                 description: Rejection reason (if rejected)
+ *                 example: "Incomplete information"
  *     responses:
  *       200:
  *         description: Successful operation
@@ -266,7 +264,13 @@ router.get("/", ktpController.getAllKtpData);
  *               status: success
  *               message: KTP verified successfully
  *               ktp:
- *                 $ref: "#/definitions/KTP"
+ *                 _id: "60a0b78c4c3b1344dc9308a3"
+ *                 nama: "John Doe"
+ *                 NIK: "1234567890123456"
+ *                 verified: "accept"
+ *                 rejectionReason: "Incomplete information"
+ *                 acceptanceDate: "2021-05-15T10:30:45.678Z"
+ *                 rejectionDate: "2021-05-15T11:45:12.345Z"
  *       404:
  *         description: KTP not found
  *         content:
@@ -281,34 +285,6 @@ router.get("/", ktpController.getAllKtpData);
  *             example:
  *               status: error
  *               error: Internal Server Error
- *
- * definitions:
- *   KTP:
- *     type: object
- *     properties:
- *       _id:
- *         type: string
- *         example: 60a0b78c4c3b1344dc9308a3
- *       nama:
- *         type: string
- *         example: John Doe
- *       NIK:
- *         type: string
- *         example: "1234567890123456"
- *       verified:
- *         type: string
- *         example: "true"
- *       rejectionReason:
- *         type: string
- *         example: "Incomplete information"
- *       createdAt:
- *         type: string
- *         format: date-time
- *         example: "2021-05-15T10:30:45.678Z"
- *       updatedAt:
- *         type: string
- *         format: date-time
- *         example: "2021-05-15T11:45:12.345Z"
  */
 router.put("/:id", ktpController.verifyKTP);
 
