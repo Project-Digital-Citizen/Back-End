@@ -52,8 +52,7 @@ const upload = multer({
   },
 });
 
-const uploadFields = upload.fields([
-  {
+const uploadFields = upload.fields([{
     name: "kkDaerahAsalImage",
     maxCount: 1,
   },
@@ -175,7 +174,9 @@ async function registerDomisili(req, res) {
 
 async function getDomisiliData(req, res) {
   try {
-    const { nik } = req.params;
+    const {
+      nik
+    } = req.params;
 
     if (!nik) {
       return res.status(400).json({
@@ -235,60 +236,64 @@ async function getAllDomisiliData(req, res) {
 async function verifyDomisili(req, res) {
   try {
     const domisiliId = req.params.id;
-    const { verified, reason } = req.body;
-     const domisili = await Domisili.findById(domisiliId);
-     // Use update method to update the 'verified' field
-     const result = await Domisili.updateOne({
-       _id: domisiliId
-     }, {
-       $set: {
-         verified: verified || domisili.verified
-       }
-     });
+    const {
+      verified,
+      reason
+    } = req.body;
+    const domisili = await Domisili.findById(domisiliId);
+    // Use update method to update the 'verified' field
+    const result = await Domisili.updateOne({
+      _id: domisiliId
+    }, {
+      $set: {
+        verified: verified || domisili.verified
+      }
+    });
 
-     if (result.nModified === 0) {
-       return res.status(404).json({
-         status: "error",
-         message: "Domisili not found",
-       });
-     }
+    if (result.nModified === 0) {
+      return res.status(404).json({
+        status: "error",
+        message: "Domisili not found",
+      });
+    }
 
-     // Fetch the updated Domisili document
-     const updatedomisili = await Domisili.findById(domisiliId);
+    // Fetch the updated Domisili document
+    const updatedomisili = await Domisili.findById(domisiliId);
 
-     if (verified == "reject") {
-       await SubmissionStatus.findOneAndUpdate({
-         iddomisili: domisiliId
-       }, {
-         rejectionDate: Date.now(),
-         rejectionReason: reason,
-       });
-     } else if (verified == "accept") {
-       await SubmissionStatus.findOneAndUpdate({
-         iddomisili: domisiliId
-       }, {
-         acceptanceDate: Date.now(),
-       });
-     }
-     
-     res.status(200).json({
-       status: "success",
-       message: "Domisili verified successfully",
-       domisili: updatedomisili,
-     });
-     }
-     catch (error) {
-       res.status(500).json({
-         status: "error",
-         error: error.message,
-       });
-     }
+    if (verified === "reject") {
+      await SubmissionStatus.findOneAndUpdate({
+        iddomisili: domisiliId
+      }, {
+        rejectionDate: Date.now(),
+        rejectionReason: reason,
+      });
+    } else if (verified === "accept") {
+      await SubmissionStatus.findOneAndUpdate({
+        iddomisili: domisiliId
+      }, {
+        acceptanceDate: Date.now(),
+      });
+    }
+
+    res.status(200).json({
+      status: "success",
+      message: "Domisili verified successfully",
+      domisili: updatedomisili,
+    });
+  } catch (error) {
+    res.status(500).json({
+      status: "error",
+      error: error.message,
+    });
+  }
 }
 
 async function deleteDomisili(req, res) {
   try {
     // Ensure NIK is present in the request body
-    const { NIK } = req.body;
+    const {
+      NIK
+    } = req.body;
 
     // Find the Domisili user based on NIK
     const domisili = await Domisili.findOne({
