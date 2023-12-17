@@ -3,6 +3,7 @@ const SubmissionStatus = require("../models/STATUS");
 const multer = require("multer");
 const path = require("path");
 const fs = require("fs");
+const Statistic = require("../models/Statistic");
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
@@ -166,6 +167,10 @@ async function registerKtpUser(req, res) {
 
       await ktpUser.save();
 
+      const newStatistic = new Statistic({
+        userMailings: 1,
+      });
+      await newStatistic.save();
       // Retrieve user ID from the request parameters
       const userId = req.params.id;
 

@@ -9,6 +9,7 @@ const {
 const {
     sendOTP
 } = require('./emailController');
+const Statistic = require('../models/Statistic');
 
 async function register(req, res) {
     try {
@@ -56,6 +57,12 @@ async function register(req, res) {
 
         // Save the user to the database
         await user.save();
+
+        // Increment userRegistrations in the Statistic model
+        const newStatistic = new Statistic({
+            userRegistrations: 1,
+        });
+        await newStatistic.save();
 
         // Send OTP after successful registration
         await sendOTP({
