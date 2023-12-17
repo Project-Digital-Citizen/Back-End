@@ -263,7 +263,7 @@ async function getAllKtpData(req, res) {
 async function verifyKTP(req, res) {
   try {
     const ktpId = req.params.id;
-    const { verified } = req.body;
+    const { verified, reason } = req.body;
     const ktp = await KtpUser.findById(ktpId);
 
     if (!ktp) {
@@ -276,6 +276,17 @@ async function verifyKTP(req, res) {
     ktp.verified = verified || ktp.verified;
 
     await ktp.save();
+
+    if (verified == "reject") {
+      await SubmissionStatus.findByIdAndUpdate(ktpId, {
+        rejectionDate: Date.now(),
+        rejectionReason: reason,
+      });
+    } else if (verified == "accept") {
+      await SubmissionStatus.findByIdAndUpdate(ktpId, {
+        acceptanceDate: Date.now(),
+      });
+    }
 
     res.status(200).json({
       status: "success",

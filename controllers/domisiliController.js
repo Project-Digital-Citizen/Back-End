@@ -1,5 +1,5 @@
 const Domisili = require("../models/DOMISILI");
-const SubmissionStatus = require('../models/STATUS');
+const SubmissionStatus = require("../models/STATUS");
 const multer = require("multer");
 const path = require("path");
 const fs = require("fs");
@@ -8,12 +8,12 @@ const Statistic = require("../models/Statistic");
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
     // Retrieve NIK from request body or use 'unknown' if not present
-    const nik = req.body.NIKPindah || 'unknown';
+    const nik = req.body.NIKPindah || "unknown";
 
     // Create a new folder for each user based on their NIK
     const userFolder = `./public/images/${nik}`;
     fs.mkdirSync(userFolder, {
-      recursive: true
+      recursive: true,
     });
 
     // Set the destination path to the user-specific folder
@@ -21,63 +21,70 @@ const storage = multer.diskStorage({
   },
   filename: function (req, file, cb) {
     const ext = path.extname(file.originalname);
-    const nik = req.body.NIKPindah || 'unknown';
+    const nik = req.body.NIKPindah || "unknown";
     // Determine suratType based on file name
-    let suratType = 'unknown';
-    if (file.fieldname.toLowerCase().includes('kkdaerahasalimage')) {
-      suratType = 'kk';
-    } else if (file.fieldname.toLowerCase().includes('ktpkeluargapindahimage')) {
-      suratType = 'ktp';
+    let suratType = "unknown";
+    if (file.fieldname.toLowerCase().includes("kkdaerahasalimage")) {
+      suratType = "kk";
+    } else if (
+      file.fieldname.toLowerCase().includes("ktpkeluargapindahimage")
+    ) {
+      suratType = "domisili";
     }
 
     const imageName = `Foto_${suratType}_${nik}${ext}`;
     cb(null, imageName);
-  }
+  },
 });
 
 const upload = multer({
   storage: storage,
   limits: {
-    fileSize: 90000000
+    fileSize: 90000000,
   }, // Increased to 90 MB
   fileFilter: function (req, file, cb) {
-    const allowedTypes = ['.png', '.jpg', '.jpeg'];
+    const allowedTypes = [".png", ".jpg", ".jpeg"];
     const ext = path.extname(file.originalname);
     if (!allowedTypes.includes(ext.toLowerCase())) {
-      return cb(new Error('Invalid Image Type'));
+      return cb(new Error("Invalid Image Type"));
     }
     cb(null, true);
-  }
+  },
 });
 
-const uploadFields = upload.fields([{
-    name: 'kkDaerahAsalImage',
-    maxCount: 1
+const uploadFields = upload.fields([
+  {
+    name: "kkDaerahAsalImage",
+    maxCount: 1,
   },
   {
-    name: 'ktpKeluargaPindahImage',
-    maxCount: 1
-  }
+    name: "ktpKeluargaPindahImage",
+    maxCount: 1,
+  },
 ]);
 
 async function registerDomisili(req, res) {
   uploadFields(req, res, async function (err) {
     if (err instanceof multer.MulterError) {
       return res.status(422).json({
-        status: 'error',
+        status: "error",
         message: err.message,
       });
     } else if (err) {
       return res.status(500).json({
-        status: 'error',
+        status: "error",
         message: err.message,
       });
     }
 
-    if (!req.files || !req.files['kkDaerahAsalImage'] || !req.files['ktpKeluargaPindahImage']) {
+    if (
+      !req.files ||
+      !req.files["kkDaerahAsalImage"] ||
+      !req.files["ktpKeluargaPindahImage"]
+    ) {
       return res.status(400).json({
-        status: 'error',
-        message: 'Required images are missing',
+        status: "error",
+        message: "Required images are missing",
       });
     }
 
@@ -91,24 +98,28 @@ async function registerDomisili(req, res) {
       kelurahanDesa,
       klasifikasiPindah,
       NIKPindah,
-      alasanPindah
+      alasanPindah,
     } = req.body;
 
-    const kkDaerahAsalImage = req.files['kkDaerahAsalImage'][0];
-    const ktpKeluargaPindahImage = req.files['ktpKeluargaPindahImage'][0];
+    const kkDaerahAsalImage = req.files["kkDaerahAsalImage"][0];
+    const ktpKeluargaPindahImage = req.files["ktpKeluargaPindahImage"][0];
 
-    const kkDaerahAsalImageUrl = `${req.protocol}://${req.get('host')}/images/${kkDaerahAsalImage.filename}`;
-    const ktpKeluargaPindahImageUrl = `${req.protocol}://${req.get('host')}/images/${ktpKeluargaPindahImage.filename}`;
+    const kkDaerahAsalImageUrl = `${req.protocol}://${req.get("host")}/images/${
+      kkDaerahAsalImage.filename
+    }`;
+    const ktpKeluargaPindahImageUrl = `${req.protocol}://${req.get(
+      "host"
+    )}/images/${ktpKeluargaPindahImage.filename}`;
 
     try {
       const existingUser = await Domisili.findOne({
-        NIK: NIKPindah
+        NIK: NIKPindah,
       });
 
       if (existingUser) {
         return res.status(400).json({
-          status: 'error',
-          message: 'NIK already exists in the database',
+          status: "error",
+          message: "NIK already exists in the database",
         });
       }
 
@@ -124,7 +135,7 @@ async function registerDomisili(req, res) {
         NIKPindah,
         alasanPindah,
         kkDaerahAsalImage: kkDaerahAsalImageUrl,
-        ktpKeluargaPindahImage: ktpKeluargaPindahImageUrl
+        ktpKeluargaPindahImage: ktpKeluargaPindahImageUrl,
       });
 
       await domisili.save();
@@ -150,56 +161,52 @@ async function registerDomisili(req, res) {
       });
 
       res.status(201).json({
-        status: 'success',
-        message: 'Domisili registered successfully',
+        status: "success",
+        message: "Domisili registered successfully",
       });
     } catch (error) {
       res.status(500).json({
-        status: 'error',
+        status: "error",
         error: error.message,
       });
     }
   });
 }
 
-
 async function getDomisiliData(req, res) {
   try {
-    const {
-      nik
-    } = req.params;
+    const { nik } = req.params;
 
     if (!nik) {
       return res.status(400).json({
-        status: 'error',
-        message: 'NIK parameter is required',
+        status: "error",
+        message: "NIK parameter is required",
       });
     }
 
     const domisiliData = await Domisili.findOne({
-      NIKPindah: nik
+      NIKPindah: nik,
     });
 
     if (!domisiliData) {
       return res.status(404).json({
-        status: 'error',
-        message: 'Domisili data not found',
+        status: "error",
+        message: "Domisili data not found",
       });
     }
 
     res.status(200).json({
-      status: 'success',
+      status: "success",
       data: domisiliData,
     });
   } catch (error) {
     console.error(error);
     res.status(500).json({
-      status: 'error',
+      status: "error",
       error: error.message,
     });
   }
 }
-
 
 async function getAllDomisiliData(req, res) {
   try {
@@ -207,19 +214,60 @@ async function getAllDomisiliData(req, res) {
 
     if (!allDomisiliData || allDomisiliData.length === 0) {
       return res.status(404).json({
-        status: 'error',
-        message: 'No Domisili data found',
+        status: "error",
+        message: "No Domisili data found",
       });
     }
 
     res.status(200).json({
-      status: 'success',
+      status: "success",
       data: allDomisiliData,
     });
   } catch (error) {
     console.error(error);
     res.status(500).json({
-      status: 'error',
+      status: "error",
+      error: error.message,
+    });
+  }
+}
+
+async function verifyDomisili(req, res) {
+  try {
+    const domisiliId = req.params.id;
+    const { verified, reason } = req.body;
+    const domisili = await Domisili.findById(domisiliId);
+
+    if (!domisili) {
+      return res.status(404).json({
+        status: "error",
+        message: "Domisili not found",
+      });
+    }
+
+    domisili.verified = verified || domisili.verified;
+
+    await domisili.save();
+
+    if (verified == "reject") {
+      await SubmissionStatus.findByIdAndUpdate(domisiliId, {
+        rejectionDate: Date.now(),
+        rejectionReason: reason,
+      });
+    } else if (verified == "accept") {
+      await SubmissionStatus.findByIdAndUpdate(domisiliId, {
+        acceptanceDate: Date.now(),
+      });
+    }
+
+    res.status(200).json({
+      status: "success",
+      message: "Domisili verified successfully",
+      domisili,
+    });
+  } catch (error) {
+    res.status(500).json({
+      status: "error",
       error: error.message,
     });
   }
@@ -228,9 +276,7 @@ async function getAllDomisiliData(req, res) {
 async function deleteDomisili(req, res) {
   try {
     // Ensure NIK is present in the request body
-    const {
-      NIK
-    } = req.body;
+    const { NIK } = req.body;
 
     // Find the Domisili user based on NIK
     const domisili = await Domisili.findOne({
@@ -239,8 +285,8 @@ async function deleteDomisili(req, res) {
 
     if (!domisili) {
       return res.status(404).json({
-        status: 'error',
-        message: 'Domisili data not found',
+        status: "error",
+        message: "Domisili data not found",
       });
     }
 
@@ -248,24 +294,22 @@ async function deleteDomisili(req, res) {
     await Domisili.findByIdAndRemove(domisili._id);
 
     res.status(200).json({
-      status: 'success',
-      message: 'Domisili data deleted successfully',
+      status: "success",
+      message: "Domisili data deleted successfully",
     });
   } catch (error) {
-    console.error('Error:', error);
+    console.error("Error:", error);
     res.status(500).json({
-      status: 'error',
+      status: "error",
       error: error.message,
     });
   }
 }
 
-
-
-
 module.exports = {
   registerDomisili,
   getDomisiliData,
   getAllDomisiliData,
-  deleteDomisili
+  deleteDomisili,
+  verifyDomisili,
 };
