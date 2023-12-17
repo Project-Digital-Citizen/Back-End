@@ -244,13 +244,19 @@ router.get("/", ktpController.getAllKtpData);
  *         name: body
  *         description: Verification details
  *         required: true
- *         schema:
- *           type: object
- *           properties:
- *             verified:
- *               type: string
- *               description: Verification status
- *               example: true
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 verified:
+ *                   type: string
+ *                   description: Verification status ("true" or "false")
+ *                   example: "true"
+ *                 reason:
+ *                   type: string
+ *                   description: Rejection reason (if rejected)
+ *                   example: "Incomplete information"
  *     responses:
  *       200:
  *         description: Successful operation
@@ -290,8 +296,11 @@ router.get("/", ktpController.getAllKtpData);
  *         type: string
  *         example: "1234567890123456"
  *       verified:
- *         type: boolean
- *         example: true
+ *         type: string
+ *         example: "true"
+ *       rejectionReason:
+ *         type: string
+ *         example: "Incomplete information"
  *       createdAt:
  *         type: string
  *         format: date-time
@@ -302,6 +311,7 @@ router.get("/", ktpController.getAllKtpData);
  *         example: "2021-05-15T11:45:12.345Z"
  */
 router.put("/:id", ktpController.verifyKTP);
+
 
 /**
  * @swagger

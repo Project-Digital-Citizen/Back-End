@@ -164,6 +164,7 @@ async function registerKtpUser(req, res) {
         selfieImage: selfieImageUrl,
         suratRTImage: suratRTImageUrl,
         suratRWImage: suratRWImageUrl,
+        verified: '',
       });
 
       await ktpUser.save();
@@ -263,19 +264,29 @@ async function getAllKtpData(req, res) {
 async function verifyKTP(req, res) {
   try {
     const ktpId = req.params.id;
-    const { verified, reason } = req.body;
-    const ktp = await KtpUser.findById(ktpId);
+    const {
+      verified,
+      reason
+    } = req.body;
+   const ktp = await KtpUser.findById(ktpId);
+    // Use update method to update the 'verified' field
+    const result = await KtpUser.updateOne({
+      _id: ktpId
+    }, {
+      $set: {
+        verified: verified || ktp.verified
+      }
+    });
 
-    if (!ktp) {
+    if (result.nModified === 0) {
       return res.status(404).json({
         status: "error",
         message: "KTP not found",
       });
     }
 
-    ktp.verified = verified || ktp.verified;
-
-    await ktp.save();
+    // Fetch the updated KTP document
+    const updatektp = await KtpUser.findById(ktpId);
 
     if (verified == "reject") {
       await SubmissionStatus.findByIdAndUpdate(ktpId, {
@@ -291,7 +302,7 @@ async function verifyKTP(req, res) {
     res.status(200).json({
       status: "success",
       message: "KTP verified successfully",
-      ktp,
+      ktp: updatektp,
     });
   } catch (error) {
     res.status(500).json({
@@ -300,6 +311,7 @@ async function verifyKTP(req, res) {
     });
   }
 }
+
 
 async function deleteKtp(req, res) {
   try {
