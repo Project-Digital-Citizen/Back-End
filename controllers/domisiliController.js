@@ -257,16 +257,20 @@ async function verifyDomisili(req, res) {
      const updatedomisili = await Domisili.findById(domisiliId);
 
      if (verified == "reject") {
-       await SubmissionStatus.findByIdAndUpdate(domisiliId, {
+       await SubmissionStatus.findOneAndUpdate({
+         iddomisili: domisiliId
+       }, {
          rejectionDate: Date.now(),
          rejectionReason: reason,
        });
      } else if (verified == "accept") {
-       await SubmissionStatus.findByIdAndUpdate(domisiliId, {
+       await SubmissionStatus.findOneAndUpdate({
+         iddomisili: domisiliId
+       }, {
          acceptanceDate: Date.now(),
        });
      }
-
+     
      res.status(200).json({
        status: "success",
        message: "Domisili verified successfully",

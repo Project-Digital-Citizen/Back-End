@@ -291,15 +291,20 @@ async function verifyKTP(req, res) {
     const updatektp = await KtpUser.findById(ktpId);
 
     if (verified == "reject") {
-      await SubmissionStatus.findByIdAndUpdate(ktpId, {
+      await SubmissionStatus.findOneAndUpdate({
+        idktp: ktpId
+      }, {
         rejectionDate: Date.now(),
         rejectionReason: reason,
       });
     } else if (verified == "accept") {
-      await SubmissionStatus.findByIdAndUpdate(ktpId, {
+      await SubmissionStatus.findOneAndUpdate({
+        idktp: ktpId
+      }, {
         acceptanceDate: Date.now(),
       });
     }
+
 
     res.status(200).json({
       status: "success",
