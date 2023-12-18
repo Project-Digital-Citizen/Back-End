@@ -5,7 +5,7 @@
 <br />
 <div align="center">
   <a href="https://github.com/Project-Digital-Citizen/Back-End">
-   <img src="https://cdn.discordapp.com/attachments/732252882614747227/1178728519698759760/logo_3_kotak.png?ex=6589a87a&is=6577337a&hm=c21b956f1786afb37c930a7736cad647929d9a5268df220ad20593af2862867d&" alt="Logo" width="140" height="120">
+   <img src="https://cdn.discordapp.com/attachments/732252882614747227/1178728519698759760/logo_3_kotak.png?ex=6589a87a&is=6577337a&hm=c21b956f1786afb37c930a7736cad647929d9a5268df220ad20593af2862867d&" alt="Logo" width="140" height="130">
   </a>
 
 <h3 align="center">Digital Citizen</h3>
