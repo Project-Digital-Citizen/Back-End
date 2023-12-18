@@ -276,7 +276,6 @@ async function verifyKTP(req, res) {
       reason
     } = req.body;
 
-
     const ktp = await KtpUser.findById(ktpId);
     // Use update method to update the 'verified' field
     const result = await KtpUser.updateOne({
@@ -295,29 +294,49 @@ async function verifyKTP(req, res) {
     }
 
     // Fetch the updated KTP document
-    const updatektp = await KtpUser.findById(ktpId);
+    const updatedKtp = await KtpUser.findById(ktpId);
 
     if (verified === "reject") {
       await SubmissionStatus.findOneAndUpdate({
         idktp: ktpId
       }, {
         rejectionDate: Date.now(),
-        rejectionReason: reason,
+        rejectionReason: reason
       });
     } else if (verified === "accept") {
       await SubmissionStatus.findOneAndUpdate({
         idktp: ktpId
       }, {
-        acceptanceDate: Date.now(),
+        acceptanceDate: Date.now()
       });
-      await makeKTP(ktp.NIK, ktp.provinsi, ktp.kabupaten, ktp.nama, ktp.tempatTanggalLahir, ktp.jenisKelamin, ktp.alamat, ktp.rtRw, ktp.kelurahanDesa, ktp.kecamatan, ktp.agama, ktp.status, ktp.pekerjaan, ktp.kewarganegaraan, ktp.selfieImage)
-    }
 
+      // Ensure that makeKTP function is correctly defined
+      const imageUrl = await makeKTP(
+        ktp.NIK,
+        ktp.provinsi,
+        ktp.kabupaten,
+        ktp.nama,
+        ktp.tempatTanggalLahir,
+        ktp.jenisKelamin,
+        ktp.alamat,
+        ktp.rtRw,
+        ktp.kelurahanDesa,
+        ktp.kecamatan,
+        ktp.agama,
+        ktp.status,
+        ktp.pekerjaan,
+        ktp.kewarganegaraan,
+        ktp.selfieImage
+      );
+
+      // Use imageUrl for your response or other logic
+      console.log(`Image URL: ${req.protocol}://${req.get("host")}${imageUrl}`);
+    }
 
     res.status(200).json({
       status: "success",
       message: "KTP verified successfully",
-      ktp: updatektp,
+      ktp: updatedKtp,
     });
   } catch (error) {
     res.status(500).json({
@@ -326,6 +345,7 @@ async function verifyKTP(req, res) {
     });
   }
 }
+
 
 
 async function deleteKtp(req, res) {
