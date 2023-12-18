@@ -135,7 +135,7 @@ router.post("/:id", domisiliController.registerDomisili);
 
 /**
  * @swagger
- * /domisili/{nik}:
+ * /domisili/nik/{nik}:
  *   get:
  *     summary: Get Domisili data by NIK
  *     tags: [Domisili]
@@ -166,6 +166,7 @@ router.post("/:id", domisiliController.registerDomisili);
  *                 alasanPindah: Pekerjaan
  *                 kkDaerahAsalImage: (binary data)
  *                 DomisiliKeluargaPindahImage: (binary data)
+ *                 userSubmitid: 7632323 dbsbdhdb
  *       404:
  *         description: Domisili data not found
  *         content:
@@ -181,7 +182,58 @@ router.post("/:id", domisiliController.registerDomisili);
  *               status: error
  *               error: Internal Server Error
  */
-router.get("/:nik", domisiliController.getDomisiliData);
+router.get("/nik/:nik", domisiliController.getDomisiliData);
+
+/**
+ * @swagger
+ * /domisili/{id}:
+ *   get:
+ *     summary: Get Domisili data by id
+ *     tags: [Domisili]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: id of the user
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Successful operation
+ *         content:
+ *           application/json:
+ *             example:
+ *               status: success
+ *               data:
+ *                 kk: 93478563975463
+ *                 kepalaKeluarga: Jhon Die
+ *                 alamatBaru: Jl. Example Street No. 123
+ *                 provisi: Jawa Barat
+ *                 kabupatenKota: Bekasi Utara
+ *                 kecamatan: South Jakarta
+ *                 kelurahanDesa: Example Village
+ *                 klasifikasiPindah: Antar Kota Dalam Provinsi
+ *                 NIKPindah: 5983475245
+ *                 alasanPindah: Pekerjaan
+ *                 kkDaerahAsalImage: (binary data)
+ *                 DomisiliKeluargaPindahImage: (binary data)
+ *                 userSubmitid: 7632323dbsbdhdb
+ *       404:
+ *         description: Domisili data not found
+ *         content:
+ *           application/json:
+ *             example:
+ *               status: error
+ *               message: Domisili data not found
+ *       500:
+ *         description: Internal Server Error
+ *         content:
+ *           application/json:
+ *             example:
+ *               status: error
+ *               error: Internal Server Error
+ */
+router.get("/:id", domisiliController.getDomisiliDataById);
 
 /**
  * @swagger

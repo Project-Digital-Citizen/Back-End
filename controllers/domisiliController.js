@@ -86,6 +86,7 @@ async function registerDomisili(req, res) {
         message: "Required images are missing",
       });
     }
+    const userId = req.params.id;
 
     const {
       kk,
@@ -135,6 +136,7 @@ async function registerDomisili(req, res) {
         alasanPindah,
         kkDaerahAsalImage: kkDaerahAsalImageUrl,
         ktpKeluargaPindahImage: ktpKeluargaPindahImageUrl,
+        userSubmitid: userId,
       });
 
       await domisili.save();
@@ -143,8 +145,7 @@ async function registerDomisili(req, res) {
         userMailings: 1,
       });
       await newStatistic.save();
-      // Retrieve user ID from the request parameters
-      const userId = req.params.id;
+
 
       // Set initial submission status
       const submissionStatus = new SubmissionStatus({
@@ -209,6 +210,44 @@ async function getDomisiliData(req, res) {
   }
 }
 
+
+async function getDomisiliDataById(req, res) {
+  try {
+    const {
+      id
+    } = req.params;
+
+    if (!id) {
+      return res.status(400).json({
+        status: "error",
+        message: "id parameter is required",
+      });
+    }
+    
+    const domisiliData = await Domisili.findOne({
+      userSubmitid: id,
+    });
+
+    if (!domisiliData) {
+      return res.status(404).json({
+        status: "error",
+        message: "Domisili data not found",
+      });
+    }
+
+    res.status(200).json({
+      status: "success",
+      data: domisiliData,
+    });
+    }
+    catch (error) {
+      console.error(error);
+      res.status(500).json({
+        status: "error",
+        error: error.message,
+      });
+    }
+}
 async function getAllDomisiliData(req, res) {
   try {
     const allDomisiliData = await Domisili.find();
@@ -329,4 +368,5 @@ module.exports = {
   getAllDomisiliData,
   deleteDomisili,
   verifyDomisili,
+  getDomisiliDataById
 };
