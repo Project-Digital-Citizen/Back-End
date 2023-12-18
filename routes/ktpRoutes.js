@@ -159,7 +159,7 @@ router.post("/:id", ktpController.registerKtpUser);
 
 /**
  * @swagger
- * /ktp/{nik}:
+ * /ktp/nik/{nik}:
  *   get:
  *     summary: Get KTP data by NIK
  *     tags: [KTP]
@@ -210,7 +210,62 @@ router.post("/:id", ktpController.registerKtpUser);
  *               status: error
  *               error: Internal Server Error
  */
-router.get("/:nik", ktpController.getKtpData);
+router.get("/nik/:nik", ktpController.getKtpData);
+
+/**
+ * @swagger
+ * /ktp/{id}:
+ *   get:
+ *     summary: Get KTP data by NIK
+ *     tags: [KTP]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: National Identification Number (NIK) of the user
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Successful operation
+ *         content:
+ *           application/json:
+ *             example:
+ *               status: success
+ *               data:
+ *                 nama: John Doe
+ *                 NIK: 1234567890123456
+ *                 tempatTanggalLahir: Jakarta, 01-01-1990
+ *                 alamat: Jl. Example Street No. 123
+ *                 agama: Islam
+ *                 status: Married
+ *                 pekerjaan: Engineer
+ *                 kewarganegaraan: Indonesian
+ *                 rtRw: 001/002
+ *                 kecamatan: South Jakarta
+ *                 kelurahanDesa: Example Village
+ *                 jenisKelamin: Male
+ *                 golonganDarah: A
+ *                 kkImage: http:*localhost:3000/images/Foto_kk_528323232323001.png
+ *                 selfieImage: http:*localhost:3000/images/Foto_selfie_528323232323001.png
+ *                 suratRTImage: http:*localhost:3000/images/Foto_rt_528323232323001.png
+ *                 suratRWImage: http:*localhost:3000/images/Foto_rw_528323232323001.png
+ *       404:
+ *         description: KTP data not found
+ *         content:
+ *           application/json:
+ *             example:
+ *               status: error
+ *               message: KTP data not found
+ *       500:
+ *         description: Internal Server Error
+ *         content:
+ *           application/json:
+ *             example:
+ *               status: error
+ *               error: Internal Server Error
+ */
+router.get("/:id", ktpController.getKtpDataById);
 
 /**
  * @swagger

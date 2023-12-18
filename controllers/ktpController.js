@@ -102,6 +102,7 @@ async function registerKtpUser(req, res) {
       });
     }
 
+    const userId = req.params.id;
     const {
       nama,
       NIK,
@@ -170,6 +171,7 @@ async function registerKtpUser(req, res) {
         selfieImage: selfieImageUrl,
         suratRTImage: suratRTImageUrl,
         suratRWImage: suratRWImageUrl,
+        userSubmitid: userId
       });
 
       await ktpUser.save();
@@ -179,7 +181,6 @@ async function registerKtpUser(req, res) {
       });
       await newStatistic.save();
       // Retrieve user ID from the request parameters
-      const userId = req.params.id;
 
       // Set initial submission status
       const submissionStatus = new SubmissionStatus({
@@ -222,6 +223,43 @@ async function getKtpData(req, res) {
 
     const ktpData = await KtpUser.findOne({
       NIK: nik,
+    });
+
+    if (!ktpData) {
+      return res.status(404).json({
+        status: "error",
+        message: "KTP data not found",
+      });
+    }
+
+    res.status(200).json({
+      status: "success",
+      data: ktpData,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      status: "error",
+      error: error.message,
+    });
+  }
+}
+
+async function getKtpDataById(req, res) {
+  try {
+    const {
+      id
+    } = req.params;
+
+    if (!id) {
+      return res.status(400).json({
+        status: "error",
+        message: "id parameter is required",
+      });
+    }
+
+    const ktpData = await KtpUser.findOne({
+      userSubmitid: id,
     });
 
     if (!ktpData) {
@@ -393,4 +431,5 @@ module.exports = {
   getAllKtpData,
   deleteKtp,
   verifyKTP,
+  getKtpDataById
 };

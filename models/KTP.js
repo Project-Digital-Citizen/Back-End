@@ -78,6 +78,10 @@ const ktpUserSchema = new mongoose.Schema({
         type: String, // File path
         required: true,
     },
+    userSubmitid: {
+        type: String,
+        default: ''
+    },
     verified: {
         type: String,
         default: ''
