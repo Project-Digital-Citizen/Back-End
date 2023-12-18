@@ -7,7 +7,7 @@ __path = process.cwd();
 async function makeKTP(nik, prov, kabu, name, ttl, jk, jl, rtrw, lurah, camat, agama, nikah, kerja, warga, img) {
     const apiUrl = 'https://api.lolhuman.xyz/api/ktpmaker';
     const directoryName = `verify_${nik}`;
-    const imageName = `verify_${name}_${nik}.jpg`;
+    const imageName = `verify_${nik}.jpg`;
     const directoryPath = path.join(__path, 'public', 'images', directoryName);
     const imagePath = path.join(directoryPath, imageName);
 
