@@ -293,9 +293,6 @@ async function verifyKTP(req, res) {
       });
     }
 
-    // Fetch the updated KTP document
-    const updatedKtp = await KtpUser.findById(ktpId);
-
     if (verified === "reject") {
       await SubmissionStatus.findOneAndUpdate({
         idktp: ktpId
@@ -329,9 +326,17 @@ async function verifyKTP(req, res) {
         ktp.selfieImage
       );
 
-      // Use imageUrl for your response or other logic
-      console.log(`Image URL: ${req.protocol}://${req.get("host")}${imageUrl}`);
+      const urlKtp = `${req.protocol}://${req.get("host")}${imageUrl}`
+      await KtpUser.updateOne({
+        _id: ktpId
+      }, {
+        $set: {
+          ktpImage: urlKtp || ktp.ktpImage
+        }
+      });
     }
+
+    const updatedKtp = await KtpUser.findById(ktpId);
 
     res.status(200).json({
       status: "success",
