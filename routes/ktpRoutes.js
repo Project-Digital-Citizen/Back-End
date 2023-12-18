@@ -216,13 +216,13 @@ router.get("/nik/:nik", ktpController.getKtpData);
  * @swagger
  * /ktp/{id}:
  *   get:
- *     summary: Get KTP data by NIK
+ *     summary: Get KTP data by id
  *     tags: [KTP]
  *     parameters:
  *       - in: path
  *         name: id
  *         required: true
- *         description: National Identification Number (NIK) of the user
+ *         description: Id of the user
  *         schema:
  *           type: string
  *     responses:
